@@ -6,6 +6,8 @@ import com.vkr.analytics_service.mapper.PlayerMetaStatsMapper;
 import com.vkr.analytics_service.repository.player.PlayerMetaStatsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,6 +67,11 @@ public class PlayerMetaStatsServiceImpl implements PlayerMetaStatsService {
 
             playerMetaStatsRepository.save(doc);
         }
+    }
+
+    @Override
+    public Page<PlayerMetaStats> getAllMetaStats(Pageable pageable) {
+        return playerMetaStatsRepository.findAll(pageable);
     }
 
     private double calc(int numerator, int denominator) {

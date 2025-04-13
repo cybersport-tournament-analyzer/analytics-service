@@ -24,7 +24,7 @@ public class MatchEndConsumer implements KafkaConsumer<MatchEndEvent> {
             containerFactory = "kafkaListenerContainerFactory")
     public void consume(MatchEndEvent event, Acknowledgment ack) {
         try {
-            log.info("Consumed round end event: {}", event);
+            log.info("Consumed match end event: {}", event);
 //            MatchMeta meta = getMeta(String.valueOf(event.getTournamentMatchId()));
 //            playerMetaStatsService.aggregatePlayerMapStats(meta);
         } catch (Exception e) {

@@ -37,5 +37,4 @@ public class PlayerGameStats {
     private int clutches;
     private int firstKills;
 
-    private LocalDateTime updatedAt;
 }

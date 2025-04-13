@@ -5,9 +5,10 @@ import com.vkr.analytics_service.entity.player.PlayerGameStats;
 import com.vkr.analytics_service.repository.player.PlayerGameStatsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,7 +39,6 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
                             .hsp(0.0)
                             .clutches(0)
                             .firstKills(0)
-                            .updatedAt(LocalDateTime.now())
                             .build()
             );
 
@@ -51,9 +51,13 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
             playerGameStats.setAdr(average(playerGameStats.getAdr(), raw.getAdr()));
             playerGameStats.setHsp(average(playerGameStats.getHsp(), raw.getHsp()));
 
-            playerGameStats.setUpdatedAt(LocalDateTime.now());
             playerGameStatsRepository.save(playerGameStats);
         }
+    }
+
+    @Override
+    public Page<PlayerGameStats> getAllGameStats(Pageable pageable) {
+        return playerGameStatsRepository.findAll(pageable);
     }
 
     private double average(double a, double b) {

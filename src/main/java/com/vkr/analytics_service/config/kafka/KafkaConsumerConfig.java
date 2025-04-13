@@ -46,7 +46,7 @@ public class KafkaConsumerConfig {
         props.put(JsonDeserializer.TYPE_MAPPINGS,
                 """
                 round-end:com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent,
-                round-end:com.vkr.analytics_service.kafka.event.matchEnd.MatchEndEvent
+                match-end:com.vkr.analytics_service.kafka.event.matchEnd.MatchEndEvent
                 """);
 
         return new DefaultKafkaConsumerFactory<>(props);
