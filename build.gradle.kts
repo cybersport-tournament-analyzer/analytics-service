@@ -26,27 +26,52 @@ repositories {
 extra["springCloudVersion"] = "2023.0.3"
 
 dependencies {
+	/**
+	 * Spring boot starters
+	 */
+	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch:3.2.4")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.liquibase:liquibase-core")
-	implementation("org.springframework.cloud:spring-cloud-starter")
-	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-	implementation("org.springframework.cloud:spring-cloud-starter-config")
-	implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("org.postgresql:postgresql")
-	annotationProcessor("org.projectlombok:lombok")
+	implementation("org.springframework.retry:spring-retry")
+	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.boot:spring-boot-starter-integration")
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	/**
+	 * Spring Cloud
+	 */
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+	implementation("org.springframework.cloud:spring-cloud-starter")
+	implementation("org.springframework.cloud:spring-cloud-starter-config")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+	implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
+	/**
+	 * Utils & Logging
+	 */
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.slf4j:slf4j-api:2.0.5")
 	implementation("ch.qos.logback:logback-classic:1.4.11")
 	implementation("org.mapstruct:mapstruct:1.5.3.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-	implementation("com.amazonaws:aws-java-sdk-s3:1.12.464")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.0")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+	/**
+	 * Database
+	 */
+	runtimeOnly("org.postgresql:postgresql")
+
+	/**
+	 * Tests
+	 */
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	/**
+	 * Swagger / SpringDoc
+	 */
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 }
 
 dependencyManagement {
