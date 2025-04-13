@@ -12,4 +12,6 @@ public interface PlayerGameStatsService {
     void aggregate(String scope, String scopeId, String map, List<PlayerStatsRaw> players);
 
     Page<PlayerGameStats> getAllGameStats(Pageable pageable);
+
+    void deleteAllGameStats();
 }

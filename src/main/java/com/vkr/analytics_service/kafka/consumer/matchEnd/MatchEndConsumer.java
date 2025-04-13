@@ -2,6 +2,7 @@ package com.vkr.analytics_service.kafka.consumer.matchEnd;
 
 import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
 import com.vkr.analytics_service.kafka.event.matchEnd.MatchEndEvent;
+import com.vkr.analytics_service.service.player.game.PlayerGameStatsService;
 import com.vkr.analytics_service.service.player.meta.PlayerMetaStatsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,7 @@ public class MatchEndConsumer implements KafkaConsumer<MatchEndEvent> {
     public void consume(MatchEndEvent event, Acknowledgment ack) {
         try {
             log.info("Consumed match end event: {}", event);
-//            MatchMeta meta = getMeta(String.valueOf(event.getTournamentMatchId()));
-//            playerMetaStatsService.aggregatePlayerMapStats(meta);
+            ack.acknowledge();
         } catch (Exception e) {
             log.error("Unexpected error in round end consumer: {}", e.getMessage(), e);
         }

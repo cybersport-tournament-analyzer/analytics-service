@@ -14,7 +14,7 @@ import lombok.extern.jackson.Jacksonized;
 public class PlayerStatsRaw {
 
     private String steamId;
-    private String team; // team2 = CT, team3 = T
+    private String team; // 2 = CT, 3 = T
 
     private int kills;
     private int deaths;

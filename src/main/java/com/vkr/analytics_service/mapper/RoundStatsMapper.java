@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class RoundStatsMapper {
         RoundStatsDto stats = event.getRoundStats();
 
         return RoundStats.builder()
+                .id(UUID.randomUUID())
                 .tournamentId(event.getTournamentId())
                 .matchId(event.getTournamentMatchId())
                 .roundNumber(stats.getRoundNumber())
@@ -28,7 +30,6 @@ public class RoundStatsMapper {
                 .players(parsePlayers(stats.getPlayers()))
                 .killEvents(event.getKillEvents())
                 .roundEndReason(event.getRoundEndReason())
-                .timestamp(LocalDateTime.now())
                 .build();
     }
 
@@ -38,7 +39,7 @@ public class RoundStatsMapper {
         for (Map<String, String> map : rawPlayers) {
             players.add(PlayerStatsRaw.builder()
                     .steamId(map.get("accountid"))
-                    .team(map.get("team"))
+                    .team(map.get("team").equals("2") ? "CT" : "T")
                     .kills(toInt(map.get("kills")))
                     .deaths(toInt(map.get("deaths")))
                     .assists(toInt(map.get("assists")))

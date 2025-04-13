@@ -42,22 +42,44 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
                             .build()
             );
 
-            playerGameStats.setKills(playerGameStats.getKills() + raw.getKills());
-            playerGameStats.setDeaths(playerGameStats.getDeaths() + raw.getDeaths());
-            playerGameStats.setAssists(playerGameStats.getAssists() + raw.getAssists());
-            playerGameStats.setClutches(playerGameStats.getClutches() + raw.getClutchk());
-            playerGameStats.setFirstKills(playerGameStats.getFirstKills() + raw.getFirstk());
-            
-            playerGameStats.setAdr(average(playerGameStats.getAdr(), raw.getAdr()));
-            playerGameStats.setHsp(average(playerGameStats.getHsp(), raw.getHsp()));
+            if(scope.equals("global")) {
+                playerGameStats.setKills(playerGameStats.getKills() + raw.getKills());
+                playerGameStats.setDeaths(playerGameStats.getDeaths() + raw.getDeaths());
+                playerGameStats.setAssists(playerGameStats.getAssists() + raw.getAssists());
+                playerGameStats.setClutches(playerGameStats.getClutches() + raw.getClutchk());
+                playerGameStats.setFirstKills(playerGameStats.getFirstKills() + raw.getFirstk());
 
+                playerGameStats.setAdr(average(playerGameStats.getAdr(), raw.getAdr()));
+                playerGameStats.setHsp(average(playerGameStats.getHsp(), raw.getHsp()));
+            }
+            else {
+                playerGameStats.setKills(raw.getKills());
+                playerGameStats.setDeaths(raw.getDeaths());
+                playerGameStats.setAssists(raw.getAssists());
+                playerGameStats.setClutches(raw.getClutchk());
+                playerGameStats.setFirstKills(raw.getFirstk());
+
+                playerGameStats.setAdr(raw.getAdr());
+                playerGameStats.setHsp(raw.getHsp());
+            }
             playerGameStatsRepository.save(playerGameStats);
         }
+    }
+
+    private Double average(Double a, Double b) {
+        if (a == null) return b;
+        if (b == null) return a;
+        return (a + b) / 2;
     }
 
     @Override
     public Page<PlayerGameStats> getAllGameStats(Pageable pageable) {
         return playerGameStatsRepository.findAll(pageable);
+    }
+
+    @Override
+    public void deleteAllGameStats() {
+        playerGameStatsRepository.deleteAll();
     }
 
     private double average(double a, double b) {

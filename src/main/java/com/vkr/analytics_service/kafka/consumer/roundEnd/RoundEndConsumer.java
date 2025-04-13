@@ -13,6 +13,8 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 
 @Slf4j
 @Component
@@ -34,7 +36,10 @@ public class RoundEndConsumer implements KafkaConsumer<RoundEndEvent> {
             roundStatsRepository.save(roundStats);
             playerGameStatsService.aggregate("match", String.valueOf(roundStats.getMatchId()), roundStats.getMap(), roundStats.getPlayers());
             playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getMap(), roundStats.getPlayers());
-            playerGameStatsService.aggregate("global", "global", roundStats.getMap(), roundStats.getPlayers());
+            if(event.isFinal()) {
+                playerGameStatsService.aggregate("global", "global", roundStats.getMap(), roundStats.getPlayers());
+            }
+            ack.acknowledge();
         } catch (Exception e) {
             log.error("Unexpected error in round end consumer: {}", e.getMessage(), e);
         }
