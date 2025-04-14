@@ -34,10 +34,12 @@ public class RoundEndConsumer implements KafkaConsumer<RoundEndEvent> {
             log.info("Consumed round end event: {}", event);
             RoundStats roundStats = roundStatsMapper.toDocument(event);
             roundStatsRepository.save(roundStats);
-            playerGameStatsService.aggregate("match", String.valueOf(roundStats.getMatchId()), roundStats.getMap(), roundStats.getPlayers());
-            playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getMap(), roundStats.getPlayers());
-            if(event.isFinal()) {
-                playerGameStatsService.aggregate("global", "global", roundStats.getMap(), roundStats.getPlayers());
+            playerGameStatsService.aggregate("match", String.valueOf(roundStats.getMatchId()), roundStats.getMap(), roundStats.getPlayers(), event.getMatch());
+            System.out.println(event.getIsFinal());
+            if(event.getIsFinal() == 2) {
+                playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getMap(), roundStats.getPlayers(), event.getMatch());
+                playerGameStatsService.aggregate("series", String.valueOf(roundStats.getMatchId()), roundStats.getMap(), roundStats.getPlayers(), event.getMatch());
+                playerGameStatsService.aggregate("global", "global", roundStats.getMap(), roundStats.getPlayers(), event.getMatch());
             }
             ack.acknowledge();
         } catch (Exception e) {

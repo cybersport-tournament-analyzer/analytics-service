@@ -1,6 +1,7 @@
 package com.vkr.analytics_service.kafka.event.roundEnd;
 
 import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
+import com.vkr.analytics_service.dto.matchmaking.Match;
 import com.vkr.analytics_service.dto.matchmaking.RoundEndReasonDto;
 import com.vkr.analytics_service.dto.matchmaking.RoundStatsDto;
 import com.vkr.analytics_service.kafka.event.KafkaEvent;
@@ -22,5 +23,6 @@ public class RoundEndEvent implements KafkaEvent {
     private RoundStatsDto roundStats;
     private RoundEndReasonDto roundEndReason;
     private List<KillEventDto> killEvents;
-    private boolean isFinal;
+    private Match match;
+    private int isFinal;
 }

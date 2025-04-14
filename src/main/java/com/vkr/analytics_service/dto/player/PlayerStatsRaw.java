@@ -25,6 +25,12 @@ public class PlayerStatsRaw {
     private double adr;
 
     private int mvps;
+    private int score;
+
+    private int _2ks;
+    private int _3ks;
+    private int _4ks;
+    private int _5ks;
 
     private int clutchk;
     private int firstk;
@@ -38,7 +44,21 @@ public class PlayerStatsRaw {
     private int dinks;
     private int chickenk;
 
-    private int threeK;
-    private int fourK;
-    private int fiveK;
+    private int kills_with_headshot;
+    private int kills_with_pistol;
+    private int kills_with_sniper;
+    private int damage_dealt;
+
+    private int entry_attempts;
+    private int entry_successes;
+
+    private int flashes_thrown;
+    private int flashes_successful;
+    private int flashes_enemies_blinded;
+
+    private int utility_thrown;
+    private int utility_damage;
+
+    private int _1vX_attempts;
+    private int _1vX_wins;
 }
