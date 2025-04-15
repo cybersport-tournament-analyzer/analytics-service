@@ -33,6 +33,9 @@ public class PlayerGameStats {
     private double adr;
     private double hsp;
 
+    private double kast;
+    private double kd;
+
     private int score;
     private int mvps;
 

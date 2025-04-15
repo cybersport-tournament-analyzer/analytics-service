@@ -78,6 +78,7 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
                 stats.setAssists(stats.getAssists() + raw.getAssists());
                 stats.setScore(stats.getScore() + raw.getScore());
                 stats.setMvps(stats.getMvps() + raw.getMvps());
+                stats.setKd(stats.getDeaths() == 0 ? (double) stats.getKills() : (double) stats.getKills() / stats.getDeaths());
 
                 stats.set_2ks(stats.get_2ks() + raw.get_2ks());
                 stats.set_3ks(stats.get_3ks() + raw.get_3ks());
@@ -122,6 +123,7 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
             } else {
                 stats.setKills(raw.getKills());
                 stats.setDeaths(raw.getDeaths());
+                stats.setKd(stats.getDeaths() == 0 ? (double) stats.getKills() : (double) stats.getKills() / stats.getDeaths());
                 stats.setAssists(raw.getAssists());
                 stats.setScore(raw.getScore());
                 stats.setMvps(raw.getMvps());
@@ -179,5 +181,9 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
     public void deleteAllGameStats() {
         playerGameStatsRepository.deleteAll();
     }
+
+//    private double calcKast(PlayerStatsRaw player) {
+//
+//    }
 
 }

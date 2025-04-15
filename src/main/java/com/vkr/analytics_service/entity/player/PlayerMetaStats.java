@@ -26,10 +26,7 @@ public class PlayerMetaStats {
 
     private int played;
     private int won;
-    private int picked;
-    private int banned;
-
+    private int lose;
     private double winRate;
-    private double pickRate;
-    private double banRate;
+
 }

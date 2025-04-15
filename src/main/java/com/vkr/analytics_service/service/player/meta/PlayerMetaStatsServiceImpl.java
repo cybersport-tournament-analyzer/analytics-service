@@ -44,8 +44,6 @@ public class PlayerMetaStatsServiceImpl implements PlayerMetaStatsService {
                             .scopeId(String.valueOf(meta.getTournamentId()))
                             .played(0)
                             .won(0)
-                            .picked(0)
-                            .banned(0)
                             .build()
             );
 
@@ -54,16 +52,7 @@ public class PlayerMetaStatsServiceImpl implements PlayerMetaStatsService {
                 doc.setWon(doc.getWon() + 1);
             }
 
-            if (steamId.equals(meta.getPickedBy())) {
-                doc.setPicked(doc.getPicked() + 1);
-            }
-            if (steamId.equals(meta.getBannedBy())) {
-                doc.setBanned(doc.getBanned() + 1);
-            }
-
             doc.setWinRate(calc(doc.getWon(), doc.getPlayed()));
-            doc.setPickRate(calc(doc.getPicked(), doc.getPlayed()));
-            doc.setBanRate(calc(doc.getBanned(), doc.getPlayed()));
 
             playerMetaStatsRepository.save(doc);
         }

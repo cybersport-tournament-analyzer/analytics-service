@@ -24,6 +24,9 @@ public class PlayerStatsRaw {
     private double kdr;
     private double adr;
 
+    private double kd;
+    private double kast;
+
     private int mvps;
     private int score;
 

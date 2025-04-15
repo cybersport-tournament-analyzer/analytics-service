@@ -28,8 +28,8 @@ public class TournamentStats {
     private int pickedCount;
     private int bannedCount;
 
-    private double pickWinrate;
-    private double banWinrate;
+    private double pickrate;
+    private double banrate;
 
     @Field(type = FieldType.Object)
     private Map<String, Double> sideWinrate;
