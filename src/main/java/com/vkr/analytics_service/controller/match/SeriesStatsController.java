@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/stats/matches")
+@RequestMapping("/stats/series")
 @RequiredArgsConstructor
-@Tag(name = "Match stats Controller")
-public class MatchStatsController {
+@Tag(name = "Match Series stats Controller")
+public class SeriesStatsController {
 }

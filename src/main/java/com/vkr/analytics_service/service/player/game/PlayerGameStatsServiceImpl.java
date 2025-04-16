@@ -182,6 +182,46 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
         playerGameStatsRepository.deleteAll();
     }
 
+    @Override
+    public Page<PlayerGameStats> getGlobalPlayerGameStats(String playerId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<PlayerGameStats> getTournamentPlayerGameStats(String playerId, String tournamentId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<PlayerGameStats> getSeriesPlayerGameStats(String playerId, String tournamentMatchId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<PlayerGameStats> getMatchPlayerGameStats(String playerId, String tournamentMatchId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public PlayerGameStats getGlobalPlayerGameStatsOnMap(String playerId, String map, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public PlayerGameStats getTournamentPlayerGameStatsOnMap(String playerId, String tournamentId, String map, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public PlayerGameStats getSeriesPlayerGameStatsOnMap(String playerId, String tournamentMatchId, String map, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public PlayerGameStats getMatchPlayerGameStatsOnMap(String playerId, String tournamentMatchId, String map, Pageable pageable) {
+        return null;
+    }
+
 //    private double calcKast(PlayerStatsRaw player) {
 //
 //    }

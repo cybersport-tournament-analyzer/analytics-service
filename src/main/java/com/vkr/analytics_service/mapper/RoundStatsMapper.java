@@ -43,6 +43,7 @@ public class RoundStatsMapper {
                     .findFirst()
                     .orElse(null);
 
+            if(matchPlayer.getNickname_override().equals("observer")) continue;
 
             players.add(PlayerStatsRaw.builder()
                     .steamId(map.get("accountid"))
