@@ -5,16 +5,14 @@ import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
 import com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent;
 import com.vkr.analytics_service.mapper.RoundStatsMapper;
 import com.vkr.analytics_service.repository.round.RoundStatsRepository;
-import com.vkr.analytics_service.service.player.game.PlayerGameStatsService;
-import com.vkr.analytics_service.service.player.meta.PlayerMetaStatsService;
+import com.vkr.analytics_service.service.player.game.overall.PlayerGameStatsService;
+import com.vkr.analytics_service.service.player.meta.overall.PlayerMetaStatsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 
 @Slf4j

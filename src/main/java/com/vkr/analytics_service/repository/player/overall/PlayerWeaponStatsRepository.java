@@ -1,6 +1,6 @@
-package com.vkr.analytics_service.repository.player;
+package com.vkr.analytics_service.repository.player.overall;
 
-import com.vkr.analytics_service.entity.player.PlayerWeaponStats;
+import com.vkr.analytics_service.entity.player.overall.PlayerWeaponStats;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 

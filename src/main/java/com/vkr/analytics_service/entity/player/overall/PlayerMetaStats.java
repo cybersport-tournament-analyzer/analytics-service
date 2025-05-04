@@ -1,6 +1,5 @@
-package com.vkr.analytics_service.entity.player;
+package com.vkr.analytics_service.entity.player.overall;
 
-import com.vkr.analytics_service.dto.player.WeaponStats;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,9 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Document(indexName = "player_meta_stats")
 @Data
@@ -20,10 +16,9 @@ import java.util.Map;
 @Jacksonized
 public class PlayerMetaStats {
     @Id
-    private String id; // steamId-map-scope-scopeId
+    private String id; // steamId-scope-scopeId
 
     private String steamId;
-    private String map;
     private String scope;    // tournament / global
     private String scopeId;
 
@@ -31,11 +26,5 @@ public class PlayerMetaStats {
     private int won;
     private int lost;
     private double winRate; // won / played
-
-    private int totalKills;
-    private int headshots;
-    private int wallbangs;
-    private int noscopes;
-    private int smokeKills;
 
 }

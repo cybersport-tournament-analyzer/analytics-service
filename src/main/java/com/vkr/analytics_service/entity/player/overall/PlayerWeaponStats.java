@@ -1,4 +1,4 @@
-package com.vkr.analytics_service.entity.player;
+package com.vkr.analytics_service.entity.player.overall;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,6 @@ public class PlayerWeaponStats {
     private String steamId;
     private String weapon;
 
-    private String map;
     private String scope;    // match / series / tournament / global
     private String scopeId;  // matchId/ matchId / tournamentId / "global"
 

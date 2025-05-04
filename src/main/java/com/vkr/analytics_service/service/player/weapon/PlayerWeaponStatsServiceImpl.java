@@ -1,8 +1,8 @@
 package com.vkr.analytics_service.service.player.weapon;
 
 import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
-import com.vkr.analytics_service.entity.player.PlayerWeaponStats;
-import com.vkr.analytics_service.repository.player.PlayerWeaponStatsRepository;
+import com.vkr.analytics_service.entity.player.overall.PlayerWeaponStats;
+import com.vkr.analytics_service.repository.player.overall.PlayerWeaponStatsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
     }
 
     @Override
-    public void processKillEvents(List<KillEventDto> kills, String map, String scope, String scopeId) {
+    public void processKillEvents(List<KillEventDto> kills, String scope, String scopeId) {
 
         Map<String, PlayerWeaponStats> statsCache = new HashMap<>();
 
@@ -34,7 +34,7 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
             String steamId = kill.getKillerSteamId();
             String weapon = kill.getWeapon();
 
-            String id = steamId + "-" + map + "-" + scope + "-" + scopeId;
+            String id = steamId + "-" + scope + "-" + scopeId;
 
             PlayerWeaponStats stats = playerWeaponStatsRepository.findById(id)
                     .orElseGet(() -> {
@@ -42,7 +42,6 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
                         newStats.setId(id);
                         newStats.setSteamId(steamId);
                         newStats.setWeapon(weapon);
-                        newStats.setMap(map);
                         newStats.setScope(scope);
                         newStats.setScopeId(scopeId);
                         return newStats;
@@ -60,42 +59,22 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
     }
 
     @Override
-    public Page<PlayerWeaponStats> getGlobalPlayerWeaponStats(String playerId, Pageable pageable) {
+    public PlayerWeaponStats getGlobalPlayerWeaponStats(String playerId) {
         return null;
     }
 
     @Override
-    public Page<PlayerWeaponStats> getTournamentPlayerWeaponStats(String playerId, String tournamentId, Pageable pageable) {
+    public PlayerWeaponStats getTournamentPlayerWeaponStats(String playerId, String tournamentId) {
         return null;
     }
 
     @Override
-    public Page<PlayerWeaponStats> getSeriesPlayerWeaponStats(String playerId, String tournamentMatchId, Pageable pageable) {
+    public PlayerWeaponStats getSeriesPlayerWeaponStats(String playerId, String tournamentMatchId) {
         return null;
     }
 
     @Override
-    public Page<PlayerWeaponStats> getMatchPlayerWeaponStats(String playerId, String tournamentMatchId, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public PlayerWeaponStats getGlobalPlayerWeaponStatsOnMap(String playerId, String map, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public PlayerWeaponStats getTournamentPlayerWeaponStatsOnMap(String playerId, String tournamentId, String map, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public PlayerWeaponStats getSeriesPlayerWeaponStatsOnMap(String playerId, String tournamentMatchId, String map, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public PlayerWeaponStats getMatchPlayerWeaponStatsOnMap(String playerId, String tournamentMatchId, String map, Pageable pageable) {
+    public PlayerWeaponStats getMatchPlayerWeaponStats(String playerId, String tournamentMatchId) {
         return null;
     }
 

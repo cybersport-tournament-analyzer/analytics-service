@@ -1,14 +1,7 @@
 package com.vkr.analytics_service.kafka.consumer.pickbans;
 
-import com.vkr.analytics_service.entity.round.RoundStats;
 import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
 import com.vkr.analytics_service.kafka.event.pickbans.PickBansEvent;
-import com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent;
-import com.vkr.analytics_service.mapper.RoundStatsMapper;
-import com.vkr.analytics_service.repository.round.RoundStatsRepository;
-import com.vkr.analytics_service.repository.team.TeamStatsRepository;
-import com.vkr.analytics_service.repository.tournament.TournamentStatsRepository;
-import com.vkr.analytics_service.service.player.game.PlayerGameStatsService;
 import com.vkr.analytics_service.service.team.TeamStatsService;
 import com.vkr.analytics_service.service.tournament.TournamentStatsService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +10,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 
 @Slf4j

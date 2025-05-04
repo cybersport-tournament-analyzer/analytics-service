@@ -14,32 +14,40 @@ import lombok.extern.jackson.Jacksonized;
 public class PlayerStatsRaw {
 
     private String steamId;
-    private String team; // 2 = CT, 3 = T
+//    private String team; // 2 = CT, 3 = T
+
+    //все что с объекта match (не нужно пересчитывать)
 
     private int kills;
     private int deaths;
     private int assists;
-    private int damage;
-    private double hsp;
-    private double kdr;
-    private double adr;
-
-    private double kd;
-    private double kast;
-
-    private int mvps;
-    private int score;
 
     private int _2ks;
     private int _3ks;
     private int _4ks;
     private int _5ks;
 
-    private int clutchk;
-    private int firstk;
+    private int killsWithHeadshot;
+    private int killsWithPistol;
+    private int killsWithSniper;
+    private int damageDealt;
 
-    private int pistolk;
-    private int sniperk;
+    private int entryAttempts;
+    private int entrySuccesses;
+
+    private int flashesThrown;
+    private int flashesSuccessful;
+    private int flashesEnemiesBlinded;
+
+    private int utilityThrown;
+    private int utilityDamage;
+
+    private int oneVXAttempts;
+    private int oneVXWins;
+
+    //все что с консоли
+
+    private int firstk;
     private int blindk;
     private int bombk;
     private int firedmg;
@@ -47,21 +55,27 @@ public class PlayerStatsRaw {
     private int dinks;
     private int chickenk;
 
-    private int kills_with_headshot;
-    private int kills_with_pistol;
-    private int kills_with_sniper;
-    private int damage_dealt;
-
-    private int entry_attempts;
-    private int entry_successes;
-
-    private int flashes_thrown;
-    private int flashes_successful;
-    private int flashes_enemies_blinded;
-
-    private int utility_thrown;
-    private int utility_damage;
-
-    private int _1vX_attempts;
-    private int _1vX_wins;
+//    //расширенная которая рассчитывается
+//
+//    private double kast;
+//    private double clutchWinRate; //entry_succ / entry_att
+//    private int totalKillingSpree; //сумма xkS
+//    private double flashesSuccessfulRate; //flashes_enemies / flashes_thrown
+//    private double flashesPerRound; //flashes_thrown / roundsPlayed
+//
+//    private int riffleKills; //kills - (pistolk+sniperk+uniquek)
+//    private int knifeKills; // с логов
+//    private int zeusKills; // с логов
+//    private String bestWeapon; // с логов киллов
+//
+//    private int firstFeeds; // entry_attempts - entry_successes
+//    private double entryKillsRate; //entry_succ / entry_att
+//    private double entryKillsPerRound; //entry_succ / roundPlayed
+//
+//    private double rating; //пока нет формулы рейтинга
+//
+//    // это получать с ивентов киллов
+//    private int wallbangs;
+//    private int noscopes;
+//    private int smokeKills;
 }

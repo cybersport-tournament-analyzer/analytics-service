@@ -1,11 +1,10 @@
-package com.vkr.analytics_service.controller.player;
+package com.vkr.analytics_service.controller.player.stats;
 
-import com.vkr.analytics_service.entity.player.PlayerGameStats;
-import com.vkr.analytics_service.entity.player.PlayerMetaStats;
+import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
+import com.vkr.analytics_service.entity.player.overall.PlayerMetaStats;
 import com.vkr.analytics_service.entity.round.RoundStats;
-import com.vkr.analytics_service.repository.round.RoundStatsRepository;
-import com.vkr.analytics_service.service.player.game.PlayerGameStatsService;
-import com.vkr.analytics_service.service.player.meta.PlayerMetaStatsService;
+import com.vkr.analytics_service.service.player.game.overall.PlayerGameStatsService;
+import com.vkr.analytics_service.service.player.meta.overall.PlayerMetaStatsService;
 import com.vkr.analytics_service.service.round.RoundStatsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -50,4 +49,5 @@ public class PlayerStatsController {
     public void deleteAllRoundsStats() {
         roundStatsService.deleteAll();
     }
+
 }
