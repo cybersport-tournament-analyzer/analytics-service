@@ -24,7 +24,7 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
 
         playerGameStats.setClutchWinRate(
-                (double) playerGameStats.getClutchk() / playerGameStats.getClutches()
+                (double) playerGameStats.getOneVXWins() / playerGameStats.getOneVXAttempts()
         );
 
         playerGameStats.setTotalKillingSpree(
@@ -43,10 +43,6 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         );
 
         playerGameStats.setEntryKillsRate(
-                (double) playerGameStats.getEntrySuccesses() / playerGameStats.getEntryAttempts()
-        );
-
-        playerGameStats.setEntryRate(
                 (double) playerGameStats.getEntrySuccesses() / playerGameStats.getEntryAttempts()
         );
 
