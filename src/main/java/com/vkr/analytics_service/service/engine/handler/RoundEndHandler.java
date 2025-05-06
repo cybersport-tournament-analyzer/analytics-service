@@ -20,6 +20,11 @@ public class RoundEndHandler {
 
     public void handleRoundEnd(RoundEndEvent event) {
         RoundStats roundStats = roundStatsService.save(event);
+        System.out.println(event.getIsFinal());
+
+        if(roundStats.getRoundNumber() == 1) {
+            playerGameStatsService.initStats(roundStats.getPlayers(), String.valueOf(roundStats.getMatchId()),String.valueOf(roundStats.getTournamentId()), event.getSeriesOrder());
+        }
 
         for (PlayerStatsRaw player : roundStats.getPlayers()) {
             roundStats.getUsefulRound().put(player.getSteamId(), analyticsEngine.isUsefulRound(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + event.getSeriesOrder(), roundStats, event.getMatch()));

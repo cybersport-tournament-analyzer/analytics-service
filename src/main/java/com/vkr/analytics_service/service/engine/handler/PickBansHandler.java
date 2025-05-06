@@ -2,6 +2,7 @@ package com.vkr.analytics_service.service.engine.handler;
 
 
 import com.vkr.analytics_service.kafka.event.pickbans.PickBansEvent;
+import com.vkr.analytics_service.service.player.game.overall.PlayerGameStatsService;
 import com.vkr.analytics_service.service.team.TeamStatsService;
 import com.vkr.analytics_service.service.tournament.TournamentStatsService;
 import lombok.RequiredArgsConstructor;

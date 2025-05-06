@@ -28,6 +28,4 @@ public class Duels {
     @Builder.Default
     private List<PlayerDuels> duels = new ArrayList<>();
 
-
-
 }

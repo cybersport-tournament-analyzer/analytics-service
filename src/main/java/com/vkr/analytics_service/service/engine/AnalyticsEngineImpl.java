@@ -33,11 +33,11 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
 
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
 
-        playerGameStats.setKd((double) playerGameStats.getKills() / playerGameStats.getDeaths());
+        playerGameStats.setKd((double) playerGameStats.getKills() / (playerGameStats.getDeaths() == 0 ? 1 : playerGameStats.getDeaths()));
 
         playerGameStats.setAdr((double) playerGameStats.getDamageDealt() / match.getRounds_played());
 
-        playerGameStats.setHsp((double) playerGameStats.getKillsWithHeadshot() / playerGameStats.getKills());
+        playerGameStats.setHsp((double) playerGameStats.getKillsWithHeadshot() / (playerGameStats.getKills() == 0 ? 1 : playerGameStats.getKills()));
 
         playerGameStats.setKpr((double) playerGameStats.getKills() / match.getRounds_played());
 
@@ -46,7 +46,7 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         playerGameStats.setDpr((double) playerGameStats.getDamageDealt() / match.getRounds_played());
 
         playerGameStats.setClutchWinRate(
-                (double) playerGameStats.getOneVXWins() / playerGameStats.getOneVXAttempts()
+                (double) playerGameStats.getOneVXWins() / (playerGameStats.getOneVXAttempts() == 0 ? 1 : playerGameStats.getOneVXAttempts())
         );
 
         playerGameStats.setTotalKillingSpree(
@@ -57,7 +57,7 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         );
 
         playerGameStats.setFlashesSuccessfulRate(
-                (double) playerGameStats.getFlashesSuccessful() / playerGameStats.getFlashesThrown()
+                (double) playerGameStats.getFlashesSuccessful() / (playerGameStats.getFlashesThrown() == 0 ? 1 : playerGameStats.getFlashesThrown())
         );
 
         playerGameStats.setFirstFeeds(
@@ -65,7 +65,7 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         );
 
         playerGameStats.setEntryKillsRate(
-                (double) playerGameStats.getEntrySuccesses() / playerGameStats.getEntryAttempts()
+                (double) playerGameStats.getEntrySuccesses() / (playerGameStats.getEntryAttempts() == 0 ? 1 : playerGameStats.getEntryAttempts())
         );
 
         playerGameStats.setEntryKillsPerRound(

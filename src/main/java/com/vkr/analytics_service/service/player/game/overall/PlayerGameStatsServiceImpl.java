@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -147,6 +148,55 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
     @Override
     public PlayerGameStats getMatchPlayerGameStats(String playerId, String seriesId, int seriesOrder) {
         return playerGameStatsRepository.findBySteamIdAndScopeAndScopeIdAndSeriesOrder(playerId, "match", seriesId, seriesOrder);
+    }
+
+    @Override
+    public void initStats(List<PlayerStatsRaw> players, String tournamentMatchId, String tournamentId, int seriesOrder) {
+        for(PlayerStatsRaw player : players) {
+            PlayerGameStats statsTournament = playerGameStatsRepository.findById(player.getSteamId()+"-tournament-" + tournamentId + "-X").orElse(
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getSteamId()+"-tournament-"+tournamentId+"-X")
+                            .steamId(player.getSteamId())
+                            .scope("tournament")
+                            .seriesOrder(-1)
+                            .scopeId(tournamentId)
+                            .matchesPlayed(0)
+                            .build()
+                    )
+            );
+            PlayerGameStats statsSeries = playerGameStatsRepository.findById(player.getSteamId()+ "-series-" + tournamentMatchId + "-X").orElse(
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getSteamId()+"-series-"+tournamentMatchId+"-X")
+                            .steamId(player.getSteamId())
+                            .scope("series")
+                            .seriesOrder(-1)
+                            .scopeId(tournamentMatchId)
+                            .matchesPlayed(0)
+                            .build()
+                    )
+            );
+            PlayerGameStats statsGlobal = playerGameStatsRepository.findById(player.getSteamId()+ "-global-global-X").orElse(
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getSteamId()+"-global-global-X")
+                            .steamId(player.getSteamId())
+                            .scope("global")
+                            .seriesOrder(-1)
+                            .scopeId("global")
+                            .matchesPlayed(0)
+                            .build()
+                    )
+            );
+            PlayerGameStats statsMatch =
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getSteamId()+"-match-"+tournamentMatchId+"-"+seriesOrder)
+                            .steamId(player.getSteamId())
+                            .scope("match")
+                            .scopeId(tournamentMatchId)
+                            .seriesOrder(seriesOrder)
+                            .matchesPlayed(0)
+                            .build()
+                    );
+        }
     }
 
 }

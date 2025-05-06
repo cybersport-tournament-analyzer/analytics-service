@@ -33,7 +33,7 @@ public class TournamentStatsServiceImpl implements TournamentStatsService {
         for (PickBanAction pickBanAction : pickBanActions) {
             String map = pickBanAction.getMapOrSide();
             String statId = tournamentId + "-" + map;
-            if (pickBanAction.getAction() == Action.PICK) {
+            if (pickBanAction.getAction() == Action.PICK || pickBanAction.getAction() == Action.PICK_SIDE) {
                 TournamentMetaStats stats = tournamentStatsRepository.findById(statId).orElseGet(() -> TournamentMetaStats.builder()
                         .id(statId)
                         .tournamentId(String.valueOf(tournamentId))
