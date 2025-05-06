@@ -40,7 +40,7 @@ public class TournamentStatsServiceImpl implements TournamentStatsService {
                         .map(map)
                         .build());
                 stats.setMatchesPlayed(stats.getMatchesPlayed() + 1);
-                stats.setPickRate((double) stats.getMatchesPlayed() / totalMatches);
+                stats.setPickRate((double) stats.getMatchesPlayed() / (totalMatches != 0 ? totalMatches : 1));
                 tournamentStatsRepository.save(stats);
             } else if (pickBanAction.getAction() == Action.BAN) {
                 TournamentMetaStats stats = tournamentStatsRepository.findById(statId).orElseGet(() -> TournamentMetaStats.builder()
@@ -49,7 +49,7 @@ public class TournamentStatsServiceImpl implements TournamentStatsService {
                         .map(map)
                         .build());
                 stats.setBannedCount(stats.getBannedCount() + 1);
-                stats.setBanRate((double) stats.getBannedCount() / totalMatches);
+                stats.setBanRate((double) stats.getBannedCount() / (totalMatches != 0 ? totalMatches : 1));
                 tournamentStatsRepository.save(stats);
             }
         }

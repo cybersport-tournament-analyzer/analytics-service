@@ -74,7 +74,7 @@ public class TeamStatsServiceImpl implements TeamStatsService {
                         .map(map)
                         .build());
                 stats.setBannedCount(stats.getBannedCount() + 1);
-                stats.setBanRate((double) stats.getBannedCount() / totalMatches);
+                stats.setBanRate((double) stats.getBannedCount() / (totalMatches != 0 ? totalMatches : 1));
                 teamStatsRepository.save(stats);
             }
         }
