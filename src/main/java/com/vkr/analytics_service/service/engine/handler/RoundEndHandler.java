@@ -52,10 +52,10 @@ public class RoundEndHandler {
             for (PlayerStatsRaw player : roundStats.getPlayers()) {
 
                 //расчет простой расширенной статы
-                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder(), event.getMatch());
-                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "series" + roundStats.getMatchId(), event.getMatch());
-                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "tournament" + roundStats.getTournamentId(), event.getMatch());
-                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "global-global", event.getMatch());
+                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder(), event.getMatch());
+                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X", event.getMatch());
+                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X", event.getMatch());
+                analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-global-global-X", event.getMatch());
 
                 //расчет статы по оружиям
                 playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "global", "global", -1);
@@ -64,10 +64,10 @@ public class RoundEndHandler {
                 playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
 
                 //расчет лучшего оружия
-                analyticsEngine.calculateBestWeapon(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder());
-                analyticsEngine.calculateBestWeapon(player.getSteamId() + "series" + roundStats.getMatchId());
-                analyticsEngine.calculateBestWeapon(player.getSteamId() + "tournament" + roundStats.getTournamentId());
-                analyticsEngine.calculateBestWeapon(player.getSteamId() + "global-global");
+                analyticsEngine.calculateBestWeapon(player.getSteamId() + "-match-" + roundStats.getMatchId() + roundStats.getSeriesOrder());
+                analyticsEngine.calculateBestWeapon(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
+                analyticsEngine.calculateBestWeapon(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
+                analyticsEngine.calculateBestWeapon(player.getSteamId() + "-global-global-X");
 
                 //расчет KAST
                 analyticsEngine.calculateKast(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder(), roundStats.getSeriesOrder());
@@ -77,10 +77,10 @@ public class RoundEndHandler {
 
 
                 //расчет рейтинга
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder());
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "series" + roundStats.getMatchId());
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "tournament" + roundStats.getTournamentId());
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "global-global");
+                analyticsEngine.calculateOverallRating(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder());
+                analyticsEngine.calculateOverallRating(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
+                analyticsEngine.calculateOverallRating(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
+                analyticsEngine.calculateOverallRating(player.getSteamId() + "-global-global-X");
 
             }
             for (Match.Player player : event.getMatch().getPlayers()) {
