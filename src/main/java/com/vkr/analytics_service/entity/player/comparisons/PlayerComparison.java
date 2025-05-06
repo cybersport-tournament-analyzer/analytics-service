@@ -25,6 +25,7 @@ public class PlayerComparison {
     private String scope; //match / series
     private String scopeId;
 
+    @Builder.Default
     private List<PlayerComparison1v1> comparisons = new ArrayList<>();
 
     @Data
@@ -36,6 +37,9 @@ public class PlayerComparison {
 
         private String player1Id;
         private String player2Id;
+
+        private double player1Score;
+        private double player2Score;
 
         private double player1Rating;
         private double player2Rating;
@@ -61,7 +65,9 @@ public class PlayerComparison {
         private double player1EntrySuccess;
         private double player2EntrySuccess;
 
-        private Duels.PlayerDuels duels;
+        //поменять поля
+
+        private PlayerDuels duels;
     }
 
 }

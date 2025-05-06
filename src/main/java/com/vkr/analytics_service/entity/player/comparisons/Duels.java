@@ -25,22 +25,9 @@ public class Duels {
     private String scope; //match / series
     private String scopeId;
 
+    @Builder.Default
     private List<PlayerDuels> duels = new ArrayList<>();
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Jacksonized
-    public static class PlayerDuels {
-        private String player1Id;
-        private String player2Id;
 
-        private int player1Kills;
-        private int player2Kills;
-
-        private double player1KillsPercent;
-        private double player2KillsPercent;
-    }
 
 }

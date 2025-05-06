@@ -81,17 +81,17 @@ public class TeamStatsServiceImpl implements TeamStatsService {
     }
 
     @Override
-    public Page<TeamMetaStats> getAllTeamMetaStats(UUID tournamentId, String teamName, Pageable pageable) {
-        return null;
+    public List<TeamMetaStats> getAllTeamMetaStats(UUID tournamentId, String teamName) {
+       return teamStatsRepository.findAllByTournamentIdAndTeamName(String.valueOf(tournamentId), teamName);
     }
 
     @Override
     public TeamMetaStats getTeamMetaStatsForMap(UUID tournamentId, String teamName, String map) {
-        return null;
+        return teamStatsRepository.findByTournamentIdAndTeamNameAndMap(String.valueOf(tournamentId), teamName, map);
     }
 
     @Override
     public void deleteAll() {
-
+        teamStatsRepository.deleteAll();
     }
 }

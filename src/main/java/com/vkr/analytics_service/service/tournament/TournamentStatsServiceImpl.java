@@ -2,7 +2,6 @@ package com.vkr.analytics_service.service.tournament;
 
 import com.vkr.analytics_service.dto.pickban.Action;
 import com.vkr.analytics_service.dto.pickban.PickBanAction;
-import com.vkr.analytics_service.entity.team.TeamMetaStats;
 import com.vkr.analytics_service.entity.tournament.TournamentMetaStats;
 import com.vkr.analytics_service.repository.tournament.TournamentStatsRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,18 +56,18 @@ public class TournamentStatsServiceImpl implements TournamentStatsService {
     }
 
     @Override
-    public Page<TeamMetaStats> getAllTournamentStats(UUID tournamentId, Pageable pageable) {
-        return null;
+    public List<TournamentMetaStats> getAllTournamentStats(UUID tournamentId) {
+        return tournamentStatsRepository.findAllByTournamentId(String.valueOf(tournamentId));
     }
 
     @Override
-    public TeamMetaStats getTournamentStatsForMap(UUID tournamentId, String map) {
-        return null;
+    public TournamentMetaStats getTournamentStatsForMap(UUID tournamentId, String map) {
+        return tournamentStatsRepository.findByTournamentIdAndMap(String.valueOf(tournamentId), map).orElse(null);
     }
 
     @Override
     public void deleteAll() {
-
+        tournamentStatsRepository.deleteAll();
     }
 
 }

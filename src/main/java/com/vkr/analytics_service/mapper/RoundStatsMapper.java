@@ -8,10 +8,7 @@ import com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +27,8 @@ public class RoundStatsMapper {
                 .players(parsePlayers(stats.getPlayers(), event.getMatch().getPlayers()))
                 .killEvents(event.getKillEvents())
                 .roundEndReason(event.getRoundEndReason())
+                .seriesOrder(event.getSeriesOrder())
+                .usefulRound(new HashMap<>())
                 .build();
     }
 

@@ -4,6 +4,7 @@ import com.vkr.analytics_service.dto.matchmaking.Match;
 import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
 import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
 import com.vkr.analytics_service.repository.player.overall.PlayerGameStatsRepository;
+import com.vkr.analytics_service.service.engine.AnalyticsEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,11 +19,12 @@ import java.util.List;
 public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
 
     private final PlayerGameStatsRepository playerGameStatsRepository;
+    private final AnalyticsEngine analyticsEngine;
 
     @Override
-    public void aggregate(String scope, String scopeId, String map, List<PlayerStatsRaw> players, Match match) {
+    public void aggregate(String scope, String scopeId, List<PlayerStatsRaw> players, Match match, int seriesOrder) {
         for (PlayerStatsRaw raw : players) {
-            String id = raw.getSteamId() + "-" + scope + "-" + scopeId + (scope.equals("match") ? "-" + map : "");
+            String id = raw.getSteamId() + "-" + scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X");
 
             PlayerGameStats stats = playerGameStatsRepository.findById(id).orElse(
                     PlayerGameStats.builder()
@@ -34,56 +36,84 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
                             .build()
             );
 
+            if(scope.equals("match")) {
+                stats.setKills(raw.getKills());
+                stats.setDeaths(raw.getDeaths());
+                stats.setAssists(raw.getAssists());
+
+                stats.set_2ks(raw.get_2ks());
+                stats.set_3ks(raw.get_3ks());
+                stats.set_4ks(raw.get_4ks());
+                stats.set_5ks(raw.get_5ks());
+
+                stats.setBlindk(raw.getBlindk());
+                stats.setBombk(raw.getBombk());
+                stats.setFiredmg(raw.getFiredmg());
+                stats.setUniquek(raw.getUniquek());
+                stats.setDinks(raw.getDinks());
+                stats.setChickenk(raw.getChickenk());
+
+                stats.setKillsWithHeadshot(raw.getKillsWithHeadshot());
+                stats.setKillsWithPistol(raw.getKillsWithPistol());
+                stats.setKillsWithSniper(raw.getKillsWithSniper());
+                stats.setDamageDealt(raw.getDamageDealt());
+
+                stats.setEntryAttempts(raw.getEntryAttempts());
+                stats.setEntrySuccesses(raw.getEntrySuccesses());
+
+                stats.setFlashesThrown(raw.getFlashesThrown());
+                stats.setFlashesSuccessful(raw.getFlashesSuccessful());
+                stats.setFlashesEnemiesBlinded(raw.getFlashesEnemiesBlinded());
+
+                stats.setUtilityThrown(raw.getUtilityThrown());
+                stats.setUtilityDamage(raw.getUtilityDamage());
+
+                stats.setOneVXAttempts(raw.getOneVXAttempts());
+                stats.setOneVXWins(raw.getOneVXWins());
+            } else {
+                stats.setKills(stats.getKills() + raw.getKills());
+                stats.setDeaths(stats.getDeaths() + raw.getDeaths());
+                stats.setAssists(stats.getAssists() + raw.getAssists());
+
+                stats.set_2ks(stats.get_2ks() + raw.get_2ks());
+                stats.set_3ks(stats.get_3ks() + raw.get_3ks());
+                stats.set_4ks(stats.get_4ks() + raw.get_4ks());
+                stats.set_5ks(stats.get_5ks() + raw.get_5ks());
+
+                stats.setBlindk(stats.getBlindk() + raw.getBlindk());
+                stats.setBombk(stats.getBombk() + raw.getBombk());
+                stats.setFiredmg(stats.getFiredmg() + raw.getFiredmg());
+                stats.setUniquek(stats.getUniquek() + raw.getUniquek());
+                stats.setDinks(stats.getDinks() + raw.getDinks());
+                stats.setChickenk(stats.getChickenk() + raw.getChickenk());
+
+                stats.setKillsWithHeadshot(stats.getKillsWithHeadshot()  + raw.getKillsWithHeadshot());
+                stats.setKillsWithPistol(stats.getKillsWithPistol() + raw.getKillsWithPistol());
+                stats.setKillsWithSniper(stats.getKillsWithSniper() + raw.getKillsWithSniper());
+                stats.setDamageDealt(stats.getDamageDealt() + raw.getDamageDealt());
+
+                stats.setEntryAttempts(stats.getEntryAttempts() + raw.getEntryAttempts());
+                stats.setEntrySuccesses(stats.getEntrySuccesses() + raw.getEntrySuccesses());
+
+                stats.setFlashesThrown(stats.getFlashesThrown() + raw.getFlashesThrown());
+                stats.setFlashesSuccessful(stats.getFlashesSuccessful() + raw.getFlashesSuccessful());
+                stats.setFlashesEnemiesBlinded(stats.getFlashesEnemiesBlinded() + raw.getFlashesEnemiesBlinded());
+
+                stats.setUtilityThrown(stats.getUtilityThrown() + raw.getUtilityThrown());
+                stats.setUtilityDamage(stats.getUtilityDamage() + raw.getUtilityDamage());
+
+                stats.setOneVXAttempts(stats.getOneVXAttempts() + raw.getOneVXAttempts());
+                stats.setOneVXWins(stats.getOneVXWins() + raw.getOneVXWins());
+            }
+
             stats.setMatchesPlayed(stats.getMatchesPlayed() + 1);
 
-            // Raw values
-            stats.setKills(raw.getKills());
-            stats.setDeaths(raw.getDeaths());
-            stats.setAssists(raw.getAssists());
+            playerGameStatsRepository.save(stats);
 
-            stats.set_2ks(raw.get_2ks());
-            stats.set_3ks(raw.get_3ks());
-            stats.set_4ks(raw.get_4ks());
-            stats.set_5ks(raw.get_5ks());
-
-            stats.setBlindk(raw.getBlindk());
-            stats.setBombk(raw.getBombk());
-            stats.setFiredmg(raw.getFiredmg());
-            stats.setUniquek(raw.getUniquek());
-            stats.setDinks(raw.getDinks());
-            stats.setChickenk(raw.getChickenk());
-
-            stats.setKillsWithHeadshot(raw.getKillsWithHeadshot());
-            stats.setKillsWithPistol(raw.getKillsWithPistol());
-            stats.setKillsWithSniper(raw.getKillsWithSniper());
-            stats.setDamageDealt(raw.getDamageDealt());
-
-            stats.setEntryAttempts(raw.getEntryAttempts());
-            stats.setEntrySuccesses(raw.getEntrySuccesses());
-
-            stats.setFlashesThrown(raw.getFlashesThrown());
-            stats.setFlashesSuccessful(raw.getFlashesSuccessful());
-            stats.setFlashesEnemiesBlinded(raw.getFlashesEnemiesBlinded());
-
-            stats.setUtilityThrown(raw.getUtilityThrown());
-            stats.setUtilityDamage(raw.getUtilityDamage());
-
-            stats.setOneVXAttempts(raw.getOneVXAttempts());
-            stats.setOneVXWins(raw.getOneVXWins());
-
-
-            // Derived metrics
-            int deaths = stats.getDeaths() == 0 ? 1 : stats.getDeaths();
-            stats.setKast(0); // calculateKast(raw)
-            stats.setClutchWinRate((double) stats.getOneVXWins() / Math.max(stats.getOneVXAttempts(), 1));
-            stats.setFlashesPerRound((double) stats.getFlashesThrown() / stats.getMatchesPlayed());
-            stats.setFlashesSuccessfulRate((double) stats.getFlashesSuccessful() / Math.max(stats.getFlashesThrown(), 1));
-
-            stats.setFirstFeeds(stats.getEntryAttempts() - stats.getEntrySuccesses());
-            stats.setEntryKillsRate((double) stats.getEntrySuccesses() / Math.max(stats.getEntryAttempts(), 1));
-            stats.setEntryKillsPerRound((double) stats.getEntrySuccesses() / stats.getMatchesPlayed());
-
-            // TODO: Implement bestWeapon and rating logic
+            analyticsEngine.calculateBasicExtendedStats(id, match);
+            analyticsEngine.calculateKast(id, seriesOrder);
+            analyticsEngine.calculateBestWeapon(id);
+            analyticsEngine.calculateOverallRating(id);
 
             playerGameStatsRepository.save(stats);
         }
@@ -115,8 +145,8 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
     }
 
     @Override
-    public PlayerGameStats getMatchPlayerGameStats(String playerId, String matchId) {
-        return playerGameStatsRepository.findBySteamIdAndScopeAndScopeId(playerId, "match", matchId);
+    public PlayerGameStats getMatchPlayerGameStats(String playerId, String seriesId, int seriesOrder) {
+        return playerGameStatsRepository.findBySteamIdAndScopeAndScopeIdAndSeriesOrder(playerId, "match", seriesId, seriesOrder);
     }
 
 }

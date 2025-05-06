@@ -15,9 +15,9 @@ public interface TournamentStatsService {
 
     void aggregateTournamentStats(List<PickBanAction> pickBanActions, UUID tournamentId);
 
-    Page<TeamMetaStats> getAllTournamentStats(UUID tournamentId, Pageable pageable);
+    List<TournamentMetaStats> getAllTournamentStats(UUID tournamentId);
 
-    TeamMetaStats getTournamentStatsForMap(UUID tournamentId, String map);
+    TournamentMetaStats getTournamentStatsForMap(UUID tournamentId, String map);
 
     void deleteAll();
 }

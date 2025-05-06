@@ -28,35 +28,11 @@ public class PlayerMetaStatsServiceImpl implements PlayerMetaStatsService {
     }
 
     @Override
-    public void updateMetaKillsStats(List<KillEventDto> killEvents, Match match, String scope, String scopeId) {
-
-        Map<String, PlayerMetaStats> statsCache = new HashMap<>();
-
-        for (KillEventDto event : killEvents) {
-            String killerId = event.getKillerSteamId();
-
-            String statId = killerId + "-" + scope + "-" + scopeId;
-
-            PlayerMetaStats stats = statsCache.computeIfAbsent(statId, id ->
-                    playerMetaStatsRepository.findById(id).orElseGet(() -> PlayerMetaStats.builder()
-                            .id(id)
-                            .steamId(killerId)
-                            .scope(scope)
-                            .scopeId(scopeId)
-                            .build())
-            );
-        }
-
-        playerMetaStatsRepository.saveAll(statsCache.values());
-    }
-
-    @Override
     public void updateMetaPlayedStats(Match match, String scope, String scopeId) {
         Map<String, PlayerMetaStats> statsCache = new HashMap<>();
         for (Match.Player player : match.getPlayers()) {
             String playerId = player.getSteam_id_64();
             String team = player.getTeam();
-
             String statId = playerId + "-" + scope + "-" + scopeId;
 
             PlayerMetaStats stats = statsCache.computeIfAbsent(statId, id ->
@@ -87,17 +63,18 @@ public class PlayerMetaStatsServiceImpl implements PlayerMetaStatsService {
     @Override
     public PlayerMetaStats getGlobalPlayerMetaStats(String playerId) {
 
-        return null;
+        return playerMetaStatsRepository.findBySteamIdAndScope(playerId, "global");
     }
 
     @Override
     public PlayerMetaStats getTournamentPlayerMetaStats(String playerId, String tournamentId) {
-        return null;
+
+        return playerMetaStatsRepository.findBySteamIdAndScopeId(playerId, tournamentId);
     }
 
 
     @Override
     public void deleteAll() {
-
+        playerMetaStatsRepository.deleteAll();
     }
 }

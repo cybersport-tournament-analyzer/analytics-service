@@ -18,16 +18,16 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class PlayerGameStats {
 
     @Id
-    private String id; // steamId-scope-scopeId
+    private String id; // steamId-scope-scopeId-seriesOrder
 
     private String steamId;
     private String scope;    // match / series / tournament / platform
     private String scopeId;  // matchId / matchId / tournamentId / "global"
     private int matchesPlayed;
+    private int seriesOrder;
 //    private String role;
 
     //все что с объекта match (не нужно пересчитывать)
-
     private int kills;
     private int deaths;
     private int assists;
@@ -66,6 +66,13 @@ public class PlayerGameStats {
     private int chickenk;
 
     //расширенная которая рассчитывается
+
+    private double adr; //damageDealt / roundsPlayed
+    private double kd; // kills / deaths
+    private double kpr; // kills / rounds played
+    private double hsp; // killsWithHeadshot / kills
+    private double apr; //assist / rounds played
+    private double dpr; //damage / rounds played
 
     private double kast;
     private double clutchWinRate; //entry_succ / entry_att

@@ -75,20 +75,12 @@ public class PlayerGameStatsController {
 
     // --- MATCH ---
 
-    @GetMapping("/match/{matchId}")
+    @GetMapping("/match/{seriesId}/{seriesOrder}")
     public PlayerGameStats getMatchStats(
             @PathVariable String playerId,
-            @PathVariable String matchId
+            @PathVariable String seriesId,
+            @PathVariable int seriesOrder
     ) {
-        return statsService.getMatchPlayerGameStats(playerId, matchId);
-    }
-
-    @GetMapping("/match/{matchId}/map/{map}")
-    public PlayerGameStatsOnMap getMatchStatsOnMap(
-            @PathVariable String playerId,
-            @PathVariable String matchId,
-            @PathVariable String map
-    ) {
-        return onMapService.getMatchPlayerGameStatsOnMap(playerId, matchId, map);
+        return statsService.getMatchPlayerGameStats(playerId, seriesId, seriesOrder);
     }
 }

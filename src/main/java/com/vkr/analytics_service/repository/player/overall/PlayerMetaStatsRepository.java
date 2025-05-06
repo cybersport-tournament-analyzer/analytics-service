@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface PlayerMetaStatsRepository extends ElasticsearchRepository<PlayerMetaStats, String> {
-    List<PlayerMetaStats> findBySteamIdAndScope(String steamId, String scope);
+    PlayerMetaStats findBySteamIdAndScope(String steamId, String scope);
 
     PlayerMetaStats findBySteamId(String steamId);
+
+    PlayerMetaStats findBySteamIdAndScopeId(String steamId, String scopeId);
 }

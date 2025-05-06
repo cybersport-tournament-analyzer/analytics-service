@@ -17,13 +17,14 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class PlayerWeaponStats {
 
     @Id
-    private String id; // steamId-weapon-scope-scopeId-map
+    private String id; // steamId-weapon-scope-scopeId
 
     private String steamId;
     private String weapon;
 
     private String scope;    // match / series / tournament / global
     private String scopeId;  // matchId/ matchId / tournamentId / "global"
+    private int seriesOrder;
 
     private int kills;
     private int headshots;

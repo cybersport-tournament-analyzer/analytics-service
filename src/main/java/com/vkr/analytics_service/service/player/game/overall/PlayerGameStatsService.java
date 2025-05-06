@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PlayerGameStatsService {
 
-    void aggregate(String scope, String scopeId, String map, List<PlayerStatsRaw> players, Match match);
+    void aggregate(String scope, String scopeId, List<PlayerStatsRaw> players, Match match, int seriesOrder);
 
     Page<PlayerGameStats> getAllGameStats(Pageable pageable);
 
@@ -19,6 +19,6 @@ public interface PlayerGameStatsService {
     PlayerGameStats getGlobalPlayerGameStats(String playerId);
     PlayerGameStats getTournamentPlayerGameStats(String playerId, String tournamentId);
     PlayerGameStats getSeriesPlayerGameStats(String playerId, String tournamentMatchId);
-    PlayerGameStats getMatchPlayerGameStats(String playerId, String tournamentMatchId);
+    PlayerGameStats getMatchPlayerGameStats(String playerId, String tournamentMatchId, int seriesOrder);
 
 }

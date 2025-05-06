@@ -1,6 +1,8 @@
 package com.vkr.analytics_service.service.round;
 
 import com.vkr.analytics_service.entity.round.RoundStats;
+import com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent;
+import com.vkr.analytics_service.mapper.RoundStatsMapper;
 import com.vkr.analytics_service.repository.round.RoundStatsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class RoundStatsServiceImpl implements RoundStatsService {
 
     private final RoundStatsRepository roundStatsRepository;
+    private final RoundStatsMapper roundStatsMapper;
 
     @Override
     public Page<RoundStats> getAll(Pageable pageable) {
@@ -23,5 +26,12 @@ public class RoundStatsServiceImpl implements RoundStatsService {
     @Override
     public void deleteAll() {
         roundStatsRepository.deleteAll();
+    }
+
+    @Override
+    public RoundStats save(RoundEndEvent roundEndEvent) {
+        RoundStats roundStats = roundStatsMapper.toDocument(roundEndEvent);
+        log.info("Saving round stats: {}", roundStats);
+        return roundStatsRepository.save(roundStats);
     }
 }

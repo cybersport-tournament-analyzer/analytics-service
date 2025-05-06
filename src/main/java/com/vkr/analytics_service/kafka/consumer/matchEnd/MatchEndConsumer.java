@@ -2,6 +2,7 @@ package com.vkr.analytics_service.kafka.consumer.matchEnd;
 
 import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
 import com.vkr.analytics_service.kafka.event.matchEnd.MatchEndEvent;
+import com.vkr.analytics_service.service.engine.handler.MatchEndHandler;
 import com.vkr.analytics_service.service.player.meta.overall.PlayerMetaStatsService;
 import com.vkr.analytics_service.service.team.TeamStatsService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MatchEndConsumer implements KafkaConsumer<MatchEndEvent> {
 
-    private final PlayerMetaStatsService playerMetaStatsService;
-    private final TeamStatsService teamStatsService;
+    private final MatchEndHandler matchEndHandler;
 
     @Override
     @Transactional
@@ -27,11 +27,7 @@ public class MatchEndConsumer implements KafkaConsumer<MatchEndEvent> {
     public void consume(MatchEndEvent event, Acknowledgment ack) {
         try {
             log.info("Consumed match end event: {}", event);
-            playerMetaStatsService.updateMetaPlayedStats(event.getMatch(), "tournament", String.valueOf(event.getTournamentId()));
-            playerMetaStatsService.updateMetaPlayedStats(event.getMatch(), "global", "global");
-
-            teamStatsService.aggregateTeamMetaStats(event.getMatch(), event.getTournamentId(), event.getMatch().getTeam1().getName());
-            teamStatsService.aggregateTeamMetaStats(event.getMatch(), event.getTournamentId(), event.getMatch().getTeam2().getName());
+            matchEndHandler.handleMatchEnd(event);
             ack.acknowledge();
         } catch (Exception e) {
             log.error("Unexpected error in round end consumer: {}", e.getMessage(), e);

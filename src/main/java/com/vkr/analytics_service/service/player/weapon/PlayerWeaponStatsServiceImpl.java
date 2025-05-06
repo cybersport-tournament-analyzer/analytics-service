@@ -26,7 +26,7 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
     }
 
     @Override
-    public void processKillEvents(List<KillEventDto> kills, String scope, String scopeId) {
+    public void processKillEvents(List<KillEventDto> kills, String scope, String scopeId, int seriesOrder) {
 
         Map<String, PlayerWeaponStats> statsCache = new HashMap<>();
 
@@ -34,7 +34,7 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
             String steamId = kill.getKillerSteamId();
             String weapon = kill.getWeapon();
 
-            String id = steamId + "-" + scope + "-" + scopeId;
+            String id = steamId + "-" + scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X");
 
             PlayerWeaponStats stats = playerWeaponStatsRepository.findById(id)
                     .orElseGet(() -> {
@@ -59,28 +59,32 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
     }
 
     @Override
-    public PlayerWeaponStats getGlobalPlayerWeaponStats(String playerId) {
-        return null;
+    public List<PlayerWeaponStats> getGlobalPlayerWeaponStats(String playerId) {
+
+        return playerWeaponStatsRepository.findAllBySteamIdAndScopeId(playerId, "global");
     }
 
     @Override
-    public PlayerWeaponStats getTournamentPlayerWeaponStats(String playerId, String tournamentId) {
-        return null;
+    public List<PlayerWeaponStats> getTournamentPlayerWeaponStats(String playerId, String tournamentId) {
+        return playerWeaponStatsRepository.findAllBySteamIdAndScopeId(playerId, tournamentId);
     }
 
     @Override
-    public PlayerWeaponStats getSeriesPlayerWeaponStats(String playerId, String tournamentMatchId) {
-        return null;
+    public List<PlayerWeaponStats> getSeriesPlayerWeaponStats(String playerId, String tournamentMatchId) {
+        return playerWeaponStatsRepository.findAllBySteamIdAndScopeAndScopeId(playerId, "series", tournamentMatchId);
     }
 
     @Override
-    public PlayerWeaponStats getMatchPlayerWeaponStats(String playerId, String tournamentMatchId) {
-        return null;
+    public List<PlayerWeaponStats> getMatchPlayerWeaponStats(String playerId, String tournamentMatchId, int seriesOrder) {
+        return playerWeaponStatsRepository.findAllBySteamIdAndScopeAndScopeIdAndSeriesOrder(playerId,
+                "series",
+                tournamentMatchId,
+                seriesOrder);
     }
 
     @Override
     public void deleteAll() {
-
+        playerWeaponStatsRepository.deleteAll();
     }
 
 }

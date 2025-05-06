@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Document(indexName = "round_stats")
@@ -31,9 +32,13 @@ public class RoundStats {
     private UUID tournamentId;
     private int roundNumber;
     private String map;
+    private int seriesOrder;
 
     @Field(type = FieldType.Nested)
     private List<PlayerStatsRaw> players;
+
+    @Field(type = FieldType.Nested)
+    private Map<String, Boolean> usefulRound;
 
     @Field(type = FieldType.Nested)
     private List<KillEventDto> killEvents;

@@ -14,4 +14,6 @@ public interface PlayerGameStatsRepository extends ElasticsearchRepository<Playe
     PlayerGameStats findBySteamIdAndScopeAndScopeId(String steamId, String scope, String scopeId);
 
     PlayerGameStats findFirstBySteamIdAndScopeAndScopeId(String steamId, String scope, String scopeId);
+
+    PlayerGameStats findBySteamIdAndScopeAndScopeIdAndSeriesOrder(String steamId, String scope, String scopeId, int seriesOrder);
 }

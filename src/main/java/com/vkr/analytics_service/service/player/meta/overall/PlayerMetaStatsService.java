@@ -13,8 +13,6 @@ public interface PlayerMetaStatsService {
 
     Page<PlayerMetaStats> getAllMetaStats(Pageable pageable);
 
-    void updateMetaKillsStats(List<KillEventDto> killEvents, Match match, String scope, String scopeId);
-
     void updateMetaPlayedStats(Match match, String scope, String scopeId);
 
     PlayerMetaStats getGlobalPlayerMetaStats(String playerId);

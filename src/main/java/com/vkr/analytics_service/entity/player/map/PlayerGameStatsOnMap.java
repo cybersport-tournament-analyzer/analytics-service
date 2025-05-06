@@ -24,6 +24,8 @@ public class PlayerGameStatsOnMap {
     private String scope;    // match / series / tournament / platform
     private String scopeId;  // matchId / matchId / tournamentId / "global"
     private int matchesPlayed;
+    private String map;
+    private int seriesOrder;
 //    private String role;
 
     //все что с объекта match (не нужно пересчитывать)
@@ -66,6 +68,14 @@ public class PlayerGameStatsOnMap {
     private int chickenk;
 
     //расширенная которая рассчитывается
+
+    private double adr; //damageDealt / roundsPlayed
+    private double kd; // kills / deaths
+    private double kpr; // kills / roundsPLayed
+    private double hsp; // killsWithHeadshot / kills
+    private double apr; //assist / rounds played
+    private double dpr; //damage / rounds played
+
 
     private double kast;
     private double clutchWinRate; //entry_succ / entry_att

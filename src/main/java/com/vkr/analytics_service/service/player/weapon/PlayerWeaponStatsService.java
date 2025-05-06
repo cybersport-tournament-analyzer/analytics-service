@@ -10,12 +10,12 @@ import java.util.List;
 public interface PlayerWeaponStatsService {
     Page<PlayerWeaponStats> getAllWeaponStats(Pageable pageable);
 
-    void processKillEvents(List<KillEventDto> killEvents, String scope, String scopeId);
+    void processKillEvents(List<KillEventDto> killEvents, String scope, String scopeId, int seriesOrder);
 
-    PlayerWeaponStats getGlobalPlayerWeaponStats(String playerId);
-    PlayerWeaponStats getTournamentPlayerWeaponStats(String playerId, String tournamentId);
-    PlayerWeaponStats getSeriesPlayerWeaponStats(String playerId, String tournamentMatchId);
-    PlayerWeaponStats getMatchPlayerWeaponStats(String playerId, String tournamentMatchId);
+    List<PlayerWeaponStats> getGlobalPlayerWeaponStats(String playerId);
+    List<PlayerWeaponStats> getTournamentPlayerWeaponStats(String playerId, String tournamentId);
+    List<PlayerWeaponStats> getSeriesPlayerWeaponStats(String playerId, String tournamentMatchId);
+    List<PlayerWeaponStats> getMatchPlayerWeaponStats(String playerId, String tournamentMatchId, int seriesOrder);
 
     void deleteAll();
 }
