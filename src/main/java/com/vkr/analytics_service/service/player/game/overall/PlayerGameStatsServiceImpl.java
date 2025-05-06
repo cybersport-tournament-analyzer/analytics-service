@@ -110,13 +110,6 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
             stats.setMatchesPlayed(stats.getMatchesPlayed() + 1);
 
             playerGameStatsRepository.save(stats);
-
-            analyticsEngine.calculateBasicExtendedStats(id, match);
-            analyticsEngine.calculateKast(id, seriesOrder);
-            analyticsEngine.calculateBestWeapon(id);
-            analyticsEngine.calculateOverallRating(id);
-
-            playerGameStatsRepository.save(stats);
         }
     }
 

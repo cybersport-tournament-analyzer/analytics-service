@@ -45,9 +45,9 @@ public class RoundEndHandler {
 
         if (event.getIsFinal() == 2) {
             playerGameStatsService.aggregate("match", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), event.getSeriesOrder());
-            playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getPlayers(), event.getMatch(), event.getSeriesOrder());
-            playerGameStatsService.aggregate("series", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), event.getSeriesOrder());
-            playerGameStatsService.aggregate("global", "global", roundStats.getPlayers(), event.getMatch(), event.getSeriesOrder());
+            playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getPlayers(), event.getMatch(), -1);
+            playerGameStatsService.aggregate("series", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), -1);
+            playerGameStatsService.aggregate("global", "global", roundStats.getPlayers(), event.getMatch(), -1);
 
             for (PlayerStatsRaw player : roundStats.getPlayers()) {
 
@@ -71,9 +71,9 @@ public class RoundEndHandler {
 
                 //расчет KAST
                 analyticsEngine.calculateKast(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder(), roundStats.getSeriesOrder());
-                analyticsEngine.calculateKast(player.getSteamId() + "series" + roundStats.getMatchId(), roundStats.getSeriesOrder());
-                analyticsEngine.calculateKast(player.getSteamId() + "tournament" + roundStats.getTournamentId(), roundStats.getSeriesOrder());
-                analyticsEngine.calculateKast(player.getSteamId() + "global-global", roundStats.getSeriesOrder());
+                analyticsEngine.calculateKast(player.getSteamId() + "series" + roundStats.getMatchId(), -1);
+//                analyticsEngine.calculateKast(player.getSteamId() + "tournament" + roundStats.getTournamentId(), roundStats.getSeriesOrder());
+//                analyticsEngine.calculateKast(player.getSteamId() + "global-global", roundStats.getSeriesOrder());
 
 
                 //расчет рейтинга

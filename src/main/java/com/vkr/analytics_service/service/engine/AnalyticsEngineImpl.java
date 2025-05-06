@@ -152,7 +152,10 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
     public void calculateBestWeapon(String playerGameStatsId) {
         String[] split = playerGameStatsId.split("-");
         String playerId = split[0];
-        String seriesId = split[2] + "-" + split[3] + "-" + split[4] + "-" + split[5] + "-" + split[6];
+        String seriesId;
+        if(!split[1].equals("global")){
+            seriesId = split[2] + "-" + split[3] + "-" + split[4] + "-" + split[5] + "-" + split[6];
+        } else seriesId = "global";
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
         List<PlayerWeaponStats> playerWeaponStats = playerWeaponStatsRepository.findAllBySteamIdAndScopeId(playerId, seriesId);
 
