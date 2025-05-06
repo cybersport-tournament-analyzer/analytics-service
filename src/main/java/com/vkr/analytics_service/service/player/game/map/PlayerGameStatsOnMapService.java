@@ -8,10 +8,9 @@ import java.util.List;
 
 public interface PlayerGameStatsOnMapService {
 
-    void aggregate(String scope, String scopeId, String map, List<PlayerStatsRaw> players, Match match, int seriesOrder);
+    void aggregate(String scope, String scopeId, String map, List<PlayerStatsRaw> players, Match match);
 
     PlayerGameStatsOnMap getGlobalPlayerGameStatsOnMap(String playerId, String map);
     PlayerGameStatsOnMap getTournamentPlayerGameStatsOnMap(String playerId, String tournamentId, String map);
     PlayerGameStatsOnMap getSeriesPlayerGameStatsOnMap(String playerId, String tournamentMatchId, String map);
-    PlayerGameStatsOnMap getMatchPlayerGameStatsOnMap(String playerId, String tournamentMatchId, String map, int seriesOrder);
 }
