@@ -120,14 +120,15 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
     public void calculateKast(String playerGameStatsId, int seriesOrder) {
         String[] split = playerGameStatsId.split("-");
         String playerId = split[0];
-        String seriesId = split[2];
+        String seriesId = split[2] + "-" + split[3] + "-" + split[4] + "-" + split[5] + "-" + split[6];
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
         List<RoundStats> roundStats = roundStatsRepository.findAllByMatchIdAndSeriesOrder(UUID.fromString(seriesId), seriesOrder);
         int usefulRounds = 0;
         for (RoundStats roundStat : roundStats) {
             if (Boolean.TRUE.equals(roundStat.getUsefulRound().get(playerId))) usefulRounds++;
         }
-        playerGameStats.setKast((double) usefulRounds / roundStats.size());
+        double kast = roundStats.isEmpty() ? 0.0 : (double) usefulRounds / roundStats.size();
+        playerGameStats.setKast(kast);
         playerGameStatsRepository.save(playerGameStats);
     }
 
@@ -151,7 +152,7 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
     public void calculateBestWeapon(String playerGameStatsId) {
         String[] split = playerGameStatsId.split("-");
         String playerId = split[0];
-        String seriesId = split[2];
+        String seriesId = split[2] + "-" + split[3] + "-" + split[4] + "-" + split[5] + "-" + split[6];
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
         List<PlayerWeaponStats> playerWeaponStats = playerWeaponStatsRepository.findAllBySteamIdAndScopeId(playerId, seriesId);
 

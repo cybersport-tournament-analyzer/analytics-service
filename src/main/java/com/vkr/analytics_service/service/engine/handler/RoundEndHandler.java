@@ -9,6 +9,7 @@ import com.vkr.analytics_service.service.engine.AnalyticsEngine;
 import com.vkr.analytics_service.service.player.comparison.DuelsService;
 import com.vkr.analytics_service.service.player.comparison.PlayerComparisonService;
 import com.vkr.analytics_service.service.player.game.overall.PlayerGameStatsService;
+import com.vkr.analytics_service.service.player.weapon.PlayerWeaponStatsService;
 import com.vkr.analytics_service.service.round.RoundStatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ public class RoundEndHandler {
     private final PlayerGameStatsService playerGameStatsService;
     private final DuelsService duelsService;
     private final PlayerComparisonService playerComparisonService;
+    private final PlayerWeaponStatsService playerWeaponStatsService;
 
     public void handleRoundEnd(RoundEndEvent event) {
         RoundStats roundStats = roundStatsService.save(event);
@@ -55,6 +57,11 @@ public class RoundEndHandler {
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "tournament" + roundStats.getTournamentId(), event.getMatch());
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "global-global", event.getMatch());
 
+                //расчет статы по оружиям
+                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "global", "global", -1);
+                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "match", String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
+                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "series", String.valueOf(roundStats.getMatchId()), -1);
+                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
 
                 //расчет лучшего оружия
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder());
