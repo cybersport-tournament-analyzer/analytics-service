@@ -25,9 +25,15 @@ public class PlayerComparisonServiceImpl implements PlayerComparisonService {
         PlayerDuels playerDuel = duelsService.findByPlayers(player1Id, player2Id, scope, scopeId, seriesOrder);
         if(playerDuel == null) { playerDuel = duelsService.findByPlayers(player2Id, player1Id, scope, scopeId, seriesOrder); }
         PlayerComparison playerComparison = playerComparisonRepository.findById(scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X")).orElse(null);
-
-        PlayerGameStats playerGameStats1 = playerGameStatsService.getMatchPlayerGameStats(player1Id, scopeId, seriesOrder);
-        PlayerGameStats playerGameStats2 = playerGameStatsService.getMatchPlayerGameStats(player2Id, scopeId, seriesOrder);
+        PlayerGameStats playerGameStats1;
+        PlayerGameStats playerGameStats2;
+        if(scope.equals("match")) {
+            playerGameStats1 = playerGameStatsService.getMatchPlayerGameStats(player1Id, scopeId, seriesOrder);
+            playerGameStats2 = playerGameStatsService.getMatchPlayerGameStats(player2Id, scopeId, seriesOrder);
+        } else {
+            playerGameStats1 = playerGameStatsService.getSeriesPlayerGameStats(player1Id, scopeId);
+            playerGameStats2 = playerGameStatsService.getSeriesPlayerGameStats(player2Id, scopeId);
+        }
 
         double p1Score = calculatePlayerScore(
                 playerGameStats1.getRating(), playerGameStats1.getKd(), playerGameStats1.getKpr(),
