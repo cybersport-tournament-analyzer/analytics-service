@@ -12,7 +12,7 @@ public interface DuelsService {
 
     void createDuel(String scope, String scopeId, int seriesOrder);
 
-    PlayerDuels findByPlayers(String player1Id, String player2Id, String scope, String scopeId);
+    PlayerDuels findByPlayers(String player1Id, String player2Id, String scope, String scopeId, int seriesOrder);
 
     Duels getMatchDuels(String seriesId, int seriesOrder);
 

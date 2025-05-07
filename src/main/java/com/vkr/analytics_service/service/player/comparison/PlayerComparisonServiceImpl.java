@@ -22,7 +22,8 @@ public class PlayerComparisonServiceImpl implements PlayerComparisonService {
 
     @Override
     public void processPlayerComparison1v1(String player1Id, String player2Id, String scope, String scopeId, int seriesOrder) {
-        PlayerDuels playerDuel = duelsService.findByPlayers(player1Id, player2Id, scope, scopeId);
+        PlayerDuels playerDuel = duelsService.findByPlayers(player1Id, player2Id, scope, scopeId, seriesOrder);
+        if(playerDuel == null) { playerDuel = duelsService.findByPlayers(player2Id, player1Id, scope, scopeId, seriesOrder); }
         PlayerComparison playerComparison = playerComparisonRepository.findById(scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X")).orElse(null);
 
         PlayerGameStats playerGameStats1 = playerGameStatsService.getMatchPlayerGameStats(player1Id, scopeId, seriesOrder);

@@ -43,6 +43,27 @@ public class RoundEndHandler {
             roundStats.getUsefulRound().put(player.getSteamId(), analyticsEngine.isUsefulRound(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + event.getSeriesOrder(), roundStats, event.getMatch()));
         }
 
+        for (Match.Player player : event.getMatch().getPlayers()) {
+            if (player.getTeam().equals("team1")) {
+                for (Match.Player player2 : event.getMatch().getPlayers()) {
+                    if (player2.getTeam().equals("team2")) {
+                        duelsService.processDuels(player.getSteam_id_64(),
+                                player2.getSteam_id_64(),
+                                "match",
+                                String.valueOf(roundStats.getMatchId()),
+                                roundStats.getKillEvents(),
+                                roundStats.getSeriesOrder());
+                        duelsService.processDuels(player.getSteam_id_64(),
+                                player2.getSteam_id_64(),
+                                "series",
+                                String.valueOf(roundStats.getMatchId()),
+                                roundStats.getKillEvents(),
+                                -1);
+                    }
+                }
+            }
+        }
+
         if (event.getIsFinal() == 2) {
             playerGameStatsService.aggregate("match", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), event.getSeriesOrder());
             playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getPlayers(), event.getMatch(), -1);
@@ -64,14 +85,14 @@ public class RoundEndHandler {
                 playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
 
                 //расчет лучшего оружия
-                analyticsEngine.calculateBestWeapon(player.getSteamId() + "-match-" + roundStats.getMatchId() + roundStats.getSeriesOrder());
+                analyticsEngine.calculateBestWeapon(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder());
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-global-global-X");
 
                 //расчет KAST
-                analyticsEngine.calculateKast(player.getSteamId() + "match" + roundStats.getMatchId() + roundStats.getSeriesOrder(), roundStats.getSeriesOrder());
-                analyticsEngine.calculateKast(player.getSteamId() + "series" + roundStats.getMatchId(), -1);
+                analyticsEngine.calculateKast(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder(), roundStats.getSeriesOrder());
+                analyticsEngine.calculateKast(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X", -1);
 //                analyticsEngine.calculateKast(player.getSteamId() + "tournament" + roundStats.getTournamentId(), roundStats.getSeriesOrder());
 //                analyticsEngine.calculateKast(player.getSteamId() + "global-global", roundStats.getSeriesOrder());
 
@@ -83,22 +104,11 @@ public class RoundEndHandler {
                 analyticsEngine.calculateOverallRating(player.getSteamId() + "-global-global-X");
 
             }
+
             for (Match.Player player : event.getMatch().getPlayers()) {
                 if (player.getTeam().equals("team1")) {
                     for (Match.Player player2 : event.getMatch().getPlayers()) {
                         if (player2.getTeam().equals("team2")) {
-                            duelsService.processDuels(player.getSteam_id_64(),
-                                    player2.getSteam_id_64(),
-                                    "match",
-                                    String.valueOf(roundStats.getMatchId()),
-                                    roundStats.getKillEvents(),
-                                    roundStats.getSeriesOrder());
-                            duelsService.processDuels(player.getSteam_id_64(),
-                                    player2.getSteam_id_64(),
-                                    "series",
-                                    String.valueOf(roundStats.getMatchId()),
-                                    roundStats.getKillEvents(),
-                                    -1);
                             playerComparisonService.processPlayerComparison1v1(player.getSteam_id_64(),
                                     player2.getSteam_id_64(),
                                     "match",
