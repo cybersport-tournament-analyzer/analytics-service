@@ -101,11 +101,13 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         for (KillEventDto event : killEvents) {
             if (event.getVictimSteamId().equals(playerId)) {
                 String killerId = event.getKillerSteamId();
-                int deathTime = Integer.parseInt(event.getTimestamp().split(":")[event.getTimestamp().split(":").length]);
+                String[] parts = event.getTimestamp().split(":");
+                int deathTime = Integer.parseInt(parts[parts.length - 1]);
 
                 for (KillEventDto revenge : killEvents) {
                     if (revenge.getVictimSteamId().equals(killerId)) {
-                        int revengeTime = Integer.parseInt(revenge.getTimestamp().split(":")[revenge.getTimestamp().split(":").length]);
+                        String[] revengeParts = revenge.getTimestamp().split(":");
+                        int revengeTime = Integer.parseInt(revengeParts[revengeParts.length - 1]);
                         if (Math.abs(revengeTime - deathTime) <= 3) {
                             return true;
                         }

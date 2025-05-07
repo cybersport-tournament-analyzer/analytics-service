@@ -20,24 +20,16 @@ import java.util.List;
 public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
 
     private final PlayerGameStatsRepository playerGameStatsRepository;
-    private final AnalyticsEngine analyticsEngine;
 
     @Override
     public void aggregate(String scope, String scopeId, List<PlayerStatsRaw> players, Match match, int seriesOrder) {
         for (PlayerStatsRaw raw : players) {
             String id = raw.getSteamId() + "-" + scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X");
 
-            PlayerGameStats stats = playerGameStatsRepository.findById(id).orElse(
-                    PlayerGameStats.builder()
-                            .id(id)
-                            .steamId(raw.getSteamId())
-                            .scope(scope)
-                            .scopeId(scopeId)
-                            .matchesPlayed(0)
-                            .build()
-            );
+            PlayerGameStats stats = playerGameStatsRepository.findById(id).orElse(null);
 
             if(scope.equals("match")) {
+                assert stats != null;
                 stats.setKills(raw.getKills());
                 stats.setDeaths(raw.getDeaths());
                 stats.setAssists(raw.getAssists());
@@ -72,6 +64,7 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
                 stats.setOneVXAttempts(raw.getOneVXAttempts());
                 stats.setOneVXWins(raw.getOneVXWins());
             } else {
+                assert stats != null;
                 stats.setKills(stats.getKills() + raw.getKills());
                 stats.setDeaths(stats.getDeaths() + raw.getDeaths());
                 stats.setAssists(stats.getAssists() + raw.getAssists());

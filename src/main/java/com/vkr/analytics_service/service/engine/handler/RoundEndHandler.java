@@ -14,6 +14,8 @@ import com.vkr.analytics_service.service.round.RoundStatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class RoundEndHandler {
@@ -43,28 +45,43 @@ public class RoundEndHandler {
             roundStats.getUsefulRound().put(player.getSteamId(), analyticsEngine.isUsefulRound(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + event.getSeriesOrder(), roundStats, event.getMatch()));
         }
 
-        for (Match.Player player : event.getMatch().getPlayers()) {
-            if (player.getTeam().equals("team1")) {
-                for (Match.Player player2 : event.getMatch().getPlayers()) {
-                    if (player2.getTeam().equals("team2")) {
-                        duelsService.processDuels(player.getSteam_id_64(),
-                                player2.getSteam_id_64(),
-                                "match",
-                                String.valueOf(roundStats.getMatchId()),
-                                roundStats.getKillEvents(),
-                                roundStats.getSeriesOrder());
-                        duelsService.processDuels(player.getSteam_id_64(),
-                                player2.getSteam_id_64(),
-                                "series",
-                                String.valueOf(roundStats.getMatchId()),
-                                roundStats.getKillEvents(),
-                                -1);
-                    }
-                }
+        //шафл дуэлей
+
+        List<Match.Player> team1Players = event.getMatch().getPlayers().stream()
+                .filter(p -> "team1".equals(p.getTeam()))
+                .toList();
+
+        List<Match.Player> team2Players = event.getMatch().getPlayers().stream()
+                .filter(p -> "team2".equals(p.getTeam()))
+                .toList();
+
+        for (Match.Player p1 : team1Players) {
+            for (Match.Player p2 : team2Players) {
+                duelsService.processDuels(p1.getSteam_id_64(),
+                        p2.getSteam_id_64(),
+                        "match",
+                        String.valueOf(roundStats.getMatchId()),
+                        roundStats.getKillEvents(),
+                        roundStats.getSeriesOrder());
+
+                duelsService.processDuels(p1.getSteam_id_64(),
+                        p2.getSteam_id_64(),
+                        "series",
+                        String.valueOf(roundStats.getMatchId()),
+                        roundStats.getKillEvents(),
+                        -1);
             }
         }
 
+        //расчет статы по оружиям
+        playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "global", "global", -1);
+        playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "match", String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
+        playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "series", String.valueOf(roundStats.getMatchId()), -1);
+        playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
+
         if (event.getIsFinal() == 2) {
+
+            //расчет базовой статы с консоли и апишки
             playerGameStatsService.aggregate("match", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), event.getSeriesOrder());
             playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getPlayers(), event.getMatch(), -1);
             playerGameStatsService.aggregate("series", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), -1);
@@ -77,12 +94,6 @@ public class RoundEndHandler {
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X", event.getMatch());
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X", event.getMatch());
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-global-global-X", event.getMatch());
-
-                //расчет статы по оружиям
-                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "global", "global", -1);
-                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "match", String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
-                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "series", String.valueOf(roundStats.getMatchId()), -1);
-                playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
 
                 //расчет лучшего оружия
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder());
@@ -105,22 +116,29 @@ public class RoundEndHandler {
 
             }
 
-            for (Match.Player player : event.getMatch().getPlayers()) {
-                if (player.getTeam().equals("team1")) {
-                    for (Match.Player player2 : event.getMatch().getPlayers()) {
-                        if (player2.getTeam().equals("team2")) {
-                            playerComparisonService.processPlayerComparison1v1(player.getSteam_id_64(),
-                                    player2.getSteam_id_64(),
-                                    "match",
-                                    String.valueOf(roundStats.getMatchId()),
-                                    roundStats.getSeriesOrder());
-                            playerComparisonService.processPlayerComparison1v1(player.getSteam_id_64(),
-                                    player2.getSteam_id_64(),
-                                    "series",
-                                    String.valueOf(roundStats.getMatchId()),
-                                    -1);
-                        }
-                    }
+            List<Match.Player> team1Players1 = event.getMatch().getPlayers().stream()
+                    .filter(p -> "team1".equals(p.getTeam()))
+                    .toList();
+
+            List<Match.Player> team2Players2 = event.getMatch().getPlayers().stream()
+                    .filter(p -> "team2".equals(p.getTeam()))
+                    .toList();
+
+            for (Match.Player p1 : team1Players1) {
+                for (Match.Player p2 : team2Players2) {
+                    playerComparisonService.processPlayerComparison1v1(
+                            p1.getSteam_id_64(),
+                            p2.getSteam_id_64(),
+                            "match",
+                            String.valueOf(roundStats.getMatchId()),
+                            roundStats.getSeriesOrder());
+
+                    playerComparisonService.processPlayerComparison1v1(
+                            p1.getSteam_id_64(),
+                            p2.getSteam_id_64(),
+                            "series",
+                            String.valueOf(roundStats.getMatchId()),
+                            -1);
                 }
             }
         }
