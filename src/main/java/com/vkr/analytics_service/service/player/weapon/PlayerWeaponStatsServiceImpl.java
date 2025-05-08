@@ -53,6 +53,8 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
             if (kill.isPenetrated()) stats.setWallbangs(stats.getWallbangs() + 1);
             if (kill.isNoscope()) stats.setNoscopes(stats.getNoscopes() + 1);
             if (kill.isSmoke()) stats.setThroughSmoke(stats.getThroughSmoke() + 1);
+
+            statsCache.put(steamId, stats);
         }
         playerWeaponStatsRepository.saveAll(statsCache.values());
 
