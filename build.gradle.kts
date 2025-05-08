@@ -58,10 +58,6 @@ dependencies {
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.0")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-	/**
-	 * Database
-	 */
-	runtimeOnly("org.postgresql:postgresql")
 
 	/**
 	 * Tests
