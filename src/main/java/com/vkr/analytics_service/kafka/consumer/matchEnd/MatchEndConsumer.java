@@ -3,8 +3,6 @@ package com.vkr.analytics_service.kafka.consumer.matchEnd;
 import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
 import com.vkr.analytics_service.kafka.event.matchEnd.MatchEndEvent;
 import com.vkr.analytics_service.service.engine.handler.MatchEndHandler;
-import com.vkr.analytics_service.service.player.meta.overall.PlayerMetaStatsService;
-import com.vkr.analytics_service.service.team.TeamStatsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

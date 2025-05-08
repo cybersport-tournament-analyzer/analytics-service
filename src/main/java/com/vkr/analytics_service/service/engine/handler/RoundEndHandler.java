@@ -29,9 +29,10 @@ public class RoundEndHandler {
 
     public void handleRoundEnd(RoundEndEvent event) {
         RoundStats roundStats = roundStatsService.save(event);
-        System.out.println(event.getIsFinal());
 
-        if (roundStats.getRoundNumber() == 1) {
+        System.out.println("ис файнал это " + event.getIsFinal());
+
+        if (event.getRoundStats().getRoundNumber() == 1) {
             playerGameStatsService.initStats(roundStats.getPlayers(), String.valueOf(roundStats.getMatchId()), String.valueOf(roundStats.getTournamentId()), event.getSeriesOrder());
 
             duelsService.createDuel("match", String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
@@ -41,8 +42,11 @@ public class RoundEndHandler {
             playerComparisonService.initPlayerComparison("series", String.valueOf(roundStats.getMatchId()), -1);
         }
 
+        System.out.println("сделал инит раундов и сравнений");
+
         for (PlayerStatsRaw player : roundStats.getPlayers()) {
             roundStats.getUsefulRound().put(player.getSteamId(), analyticsEngine.isUsefulRound(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + event.getSeriesOrder(), roundStats, event.getMatch()));
+            System.out.println("ебашу юзфул раунд для " + player.getSteamId());
         }
 
         //шафл дуэлей
@@ -55,8 +59,12 @@ public class RoundEndHandler {
                 .filter(p -> "team2".equals(p.getTeam()))
                 .toList();
 
+        System.out.println("шафлю дуэли начало");
+
         for (Match.Player p1 : team1Players) {
+            System.out.println("шафлю для " + p1.getNickname_override());
             for (Match.Player p2 : team2Players) {
+                System.out.println("шафлю для " + p1.getNickname_override() + " и " + p2.getNickname_override());
                 duelsService.processDuels(p1.getSteam_id_64(),
                         p2.getSteam_id_64(),
                         "match",
@@ -79,6 +87,8 @@ public class RoundEndHandler {
         playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "series", String.valueOf(roundStats.getMatchId()), -1);
         playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
 
+        System.out.println("заполнил стату по оружиям");
+
         if (event.getIsFinal() == 2) {
 
             //расчет базовой статы с консоли и апишки
@@ -86,6 +96,8 @@ public class RoundEndHandler {
             playerGameStatsService.aggregate("tournament", String.valueOf(roundStats.getTournamentId()), roundStats.getPlayers(), event.getMatch(), -1);
             playerGameStatsService.aggregate("series", String.valueOf(roundStats.getMatchId()), roundStats.getPlayers(), event.getMatch(), -1);
             playerGameStatsService.aggregate("global", "global", roundStats.getPlayers(), event.getMatch(), -1);
+
+            System.out.println("заполнил базовую гейм стату");
 
             for (PlayerStatsRaw player : roundStats.getPlayers()) {
 
@@ -95,11 +107,15 @@ public class RoundEndHandler {
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X", event.getMatch());
                 analyticsEngine.calculateBasicExtendedStats(player.getSteamId() + "-global-global-X", event.getMatch());
 
+                System.out.println("заполнил расширенную гейм стату");
+
                 //расчет лучшего оружия
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder());
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
                 analyticsEngine.calculateBestWeapon(player.getSteamId() + "-global-global-X");
+
+                System.out.println("посчитал бест оружие");
 
                 //расчет KAST
                 analyticsEngine.calculateKast(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder(), roundStats.getSeriesOrder());
@@ -108,12 +124,15 @@ public class RoundEndHandler {
 //                analyticsEngine.calculateKast(player.getSteamId() + "global-global", roundStats.getSeriesOrder());
 
 
+                System.out.println("посчитал каст");
+
                 //расчет рейтинга
                 analyticsEngine.calculateOverallRating(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder());
                 analyticsEngine.calculateOverallRating(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
                 analyticsEngine.calculateOverallRating(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
                 analyticsEngine.calculateOverallRating(player.getSteamId() + "-global-global-X");
 
+                System.out.println("посчитал рейтинг");
             }
 
             List<Match.Player> team1Players1 = event.getMatch().getPlayers().stream()
@@ -124,8 +143,12 @@ public class RoundEndHandler {
                     .filter(p -> "team2".equals(p.getTeam()))
                     .toList();
 
+            System.out.println("ебашим сравнения");
+
             for (Match.Player p1 : team1Players1) {
+                System.out.println("шафлю сравнение для ");
                 for (Match.Player p2 : team2Players2) {
+                    System.out.println("шафлю сравнение для " + p1.getNickname_override() + " и " + p2.getNickname_override());
                     playerComparisonService.processPlayerComparison1v1(
                             p1.getSteam_id_64(),
                             p2.getSteam_id_64(),

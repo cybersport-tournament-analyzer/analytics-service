@@ -15,10 +15,14 @@ public class MatchEndHandler {
 
     public void handleMatchEnd(MatchEndEvent event) {
 
+        System.out.println("заполняю мета стату для игроков");
+
         playerMetaStatsService.updateMetaPlayedStats(event.getMatch(), "tournament", String.valueOf(event.getTournamentId()));
         playerMetaStatsService.updateMetaPlayedStats(event.getMatch(), "global", "global");
 
+        System.out.println("заполняю тим мета стату для игроков " + event.getMatch().getTeam1().getName());
         teamStatsService.aggregateTeamMetaStats(event.getMatch(), event.getTournamentId(), event.getMatch().getTeam1().getName());
+        System.out.println("заполняю тим мета стату для игроков " + event.getMatch().getTeam2().getName());
         teamStatsService.aggregateTeamMetaStats(event.getMatch(), event.getTournamentId(), event.getMatch().getTeam2().getName());
     }
 }

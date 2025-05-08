@@ -3,8 +3,6 @@ package com.vkr.analytics_service.kafka.consumer.pickbans;
 import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
 import com.vkr.analytics_service.kafka.event.pickbans.PickBansEvent;
 import com.vkr.analytics_service.service.engine.handler.PickBansHandler;
-import com.vkr.analytics_service.service.team.TeamStatsService;
-import com.vkr.analytics_service.service.tournament.TournamentStatsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

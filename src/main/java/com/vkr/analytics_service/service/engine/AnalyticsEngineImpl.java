@@ -2,7 +2,6 @@ package com.vkr.analytics_service.service.engine;
 
 import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
 import com.vkr.analytics_service.dto.matchmaking.Match;
-import com.vkr.analytics_service.entity.player.map.PlayerGameStatsOnMap;
 import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
 import com.vkr.analytics_service.entity.player.overall.PlayerWeaponStats;
 import com.vkr.analytics_service.entity.round.RoundStats;
