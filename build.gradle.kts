@@ -30,7 +30,6 @@ dependencies {
 	 * Spring boot starters
 	 */
 	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch:3.2.4")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")

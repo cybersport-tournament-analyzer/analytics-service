@@ -5,7 +5,6 @@ import com.vkr.analytics_service.dto.matchmaking.RoundEndReasonDto;
 import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -25,8 +24,7 @@ import java.util.UUID;
 public class RoundStats {
 
     @Id
-    @UuidGenerator
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     private UUID matchId;
     private UUID tournamentId;
