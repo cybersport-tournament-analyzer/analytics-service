@@ -29,7 +29,7 @@ public class PlayerComparisonServiceImpl implements PlayerComparisonService {
             playerDuel = duelsService.findByPlayers(player2Id, player1Id, scope, scopeId, seriesOrder);
         }
 
-        String comparisonId = scope + "-" + scopeId;
+        String comparisonId = scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X");
         PlayerComparison playerComparison = playerComparisonRepository.findById(comparisonId).orElse(null);
         System.out.println("нашел сравнение");
         if (playerComparison == null) return; // можно логировать, если важно
@@ -136,8 +136,10 @@ public class PlayerComparisonServiceImpl implements PlayerComparisonService {
                 .playersStats(List.of(playerStats1, playerStats2))
                 .build();
 
-        if(playerComparison.getComparisons().isEmpty()) playerComparison.setComparisons(List.of(comparison1v1));
-        else playerComparison.getComparisons().add(comparison1v1);
+        if (playerComparison.getComparisons().isEmpty()) {
+            playerComparison.setComparisons(new ArrayList<>());
+        }
+        playerComparison.getComparisons().add(comparison1v1);
         System.out.println("до " + playerComparison.getComparisons().size());
         playerComparisonRepository.save(playerComparison);
         System.out.println("после " + playerComparison.getComparisons().size());
