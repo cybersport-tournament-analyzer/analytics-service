@@ -60,73 +60,77 @@ public class PlayerComparisonServiceImpl implements PlayerComparisonService {
         );
 
         PlayerComparison.PlayerStats1v1 playerStats1 = PlayerComparison.PlayerStats1v1.builder()
-                .playerId(player1Id)
-                .adr(Map.of("Средний урон/раунд", stats1.getAdr()))
-                .kdr(Map.of("К/Д", stats1.getKd()))
-                .damage(Map.of("Общий урон", stats1.getDamageDealt()))
-                .headshotKills(Map.of("Киллы в голову", stats1.getKillsWithHeadshot()))
-                .killingSprees(Map.of("Всего серий убийств", stats1.getTotalKillingSpree()))
-                .kast(Map.of("KAST", stats1.getKast()))
-                .rating(Map.of("Рейтинг GPoint", stats1.getRating()))
-                .clutches(Map.of("Клатчи", stats1.getOneVXAttempts()))
-                .clutchesSuccess(Map.of("Успешность клатчей", stats1.getClutchWinRate()))
-                .clutchesKills(Map.of("Убийства в клатчах", stats1.getOneVXWins()))
-                .blindk(Map.of("Убийства ослепленных", stats1.getBlindk()))
-                ._2ks(Map.of("Дабл-киллы", stats1.get_2ks()))
-                ._3ks(Map.of("Трипл-киллы", stats1.get_3ks()))
-                ._4ks(Map.of("Ультра-киллы", stats1.get_4ks()))
-                ._5ks(Map.of("Эйсы", stats1.get_5ks()))
-                .flashesCount(Map.of("Брошено флешек", stats1.getFlashesThrown()))
-                .flashesEnemies(Map.of("Ослеплено врагов", stats1.getFlashesEnemiesBlinded()))
-                .flashesSuccess(Map.of("Эффективность флешек", stats1.getFlashesSuccessfulRate()))
-                .flashesPerRound(Map.of("Флешек за раунд", stats1.getFlashesPerRound()))
-                .utilThrown(Map.of("Кинуто гранат", stats1.getUtilityThrown()))
-                .firedmg(Map.of("Урон от молотова", stats1.getFiredmg()))
-                .utilDamage(Map.of("Урон от гранат", stats1.getUtilityDamage()))
-                .utilDamagePerRound(Map.of("Урон гранатами/раунд", stats1.getUtilityDamagePerRound()))
-                .rifflek(Map.of("Фраги с рифлы", stats1.getRiffleKills()))
-                .pistolk(Map.of("Фраги с пистолетов", stats1.getKillsWithPistol()))
-                .sniperk(Map.of("Фраги со снайперки", stats1.getKillsWithSniper()))
-                .entryAttempts(Map.of("Всего энтри", stats1.getEntryAttempts()))
-                .entryKillsPercent(Map.of("Процент энтри-киллов", stats1.getEntryKillsRate()))
-                .firstk(Map.of("Первая кровь", stats1.getFirstk()))
-                .firstFeeds(Map.of("Первый фид", stats1.getFirstFeeds()))
-                .entrySuccessPerRound(Map.of("Успех в энтри/раунд", stats1.getEntryKillsPerRound()))
+                .stats(List.of(
+                        Map.of("playerId", player1Id),
+                        Map.of("Средний урон/раунд", String.valueOf(stats1.getAdr())),
+                        Map.of("К/Д", String.valueOf(stats1.getKd())),
+                        Map.of("Общий урон", String.valueOf(stats1.getDamageDealt())),
+                        Map.of("Киллы в голову", String.valueOf(stats1.getKillsWithHeadshot())),
+                        Map.of("Всего серий убийств", String.valueOf(stats1.getTotalKillingSpree())),
+                        Map.of("KAST", String.valueOf(stats1.getKast())),
+                        Map.of("Рейтинг GPoint", String.valueOf(stats1.getRating())),
+                        Map.of("Клатчи", String.valueOf(stats1.getOneVXAttempts())),
+                        Map.of("Успешность клатчей", String.valueOf(stats1.getClutchWinRate())),
+                        Map.of("Убийства в клатчах", String.valueOf(stats1.getOneVXWins())),
+                        Map.of("Убийства ослепленных", String.valueOf(stats1.getBlindk())),
+                        Map.of("Дабл-киллы", String.valueOf(stats1.get_2ks())),
+                        Map.of("Трипл-киллы", String.valueOf(stats1.get_3ks())),
+                        Map.of("Ультра-киллы", String.valueOf(stats1.get_4ks())),
+                        Map.of("Эйсы", String.valueOf(stats1.get_5ks())),
+                        Map.of("Брошено флешек", String.valueOf(stats1.getFlashesThrown())),
+                        Map.of("Ослеплено врагов", String.valueOf(stats1.getFlashesEnemiesBlinded())),
+                        Map.of("Эффективность флешек", String.valueOf(stats1.getFlashesSuccessfulRate())),
+                        Map.of("Флешек за раунд", String.valueOf(stats1.getFlashesPerRound())),
+                        Map.of("Кинуто гранат", String.valueOf(stats1.getUtilityThrown())),
+                        Map.of("Урон от молотова", String.valueOf(stats1.getFiredmg())),
+                        Map.of("Урон от гранат", String.valueOf(stats1.getUtilityDamage())),
+                        Map.of("Урон гранатами/раунд", String.valueOf(stats1.getUtilityDamagePerRound())),
+                        Map.of("Фраги с рифлы", String.valueOf(stats1.getRiffleKills())),
+                        Map.of("Фраги с пистолетов", String.valueOf(stats1.getKillsWithPistol())),
+                        Map.of("Фраги со снайперки", String.valueOf(stats1.getKillsWithSniper())),
+                        Map.of("Всего энтри", String.valueOf(stats1.getEntryAttempts())),
+                        Map.of("Процент энтри-киллов", String.valueOf(stats1.getEntryKillsRate())),
+                        Map.of("Первая кровь", String.valueOf(stats1.getFirstk())),
+                        Map.of("Первый фид", String.valueOf(stats1.getFirstFeeds())),
+                        Map.of("Успех в энтри/раунд", String.valueOf(stats1.getEntryKillsPerRound()))
+                ))
                 .build();
 
         PlayerComparison.PlayerStats1v1 playerStats2 = PlayerComparison.PlayerStats1v1.builder()
-                .playerId(player2Id)
-                .adr(Map.of("Средний урон/раунд", stats2.getAdr()))
-                .kdr(Map.of("К/Д", stats2.getKd()))
-                .damage(Map.of("Общий урон", stats2.getDamageDealt()))
-                .headshotKills(Map.of("Киллы в голову", stats2.getKillsWithHeadshot()))
-                .killingSprees(Map.of("Всего серий убийств", stats2.getTotalKillingSpree()))
-                .kast(Map.of("KAST", stats2.getKast()))
-                .rating(Map.of("Рейтинг GPoint", stats2.getRating()))
-                .clutches(Map.of("Клатчи", stats2.getOneVXAttempts()))
-                .clutchesSuccess(Map.of("Успешность клатчей", stats2.getClutchWinRate()))
-                .clutchesKills(Map.of("Убийства в клатчах", stats2.getOneVXWins()))
-                .blindk(Map.of("Убийства ослепленных", stats2.getBlindk()))
-                ._2ks(Map.of("Дабл-киллы", stats2.get_2ks()))
-                ._3ks(Map.of("Трипл-киллы", stats2.get_3ks()))
-                ._4ks(Map.of("Ультра-киллы", stats2.get_4ks()))
-                ._5ks(Map.of("Эйсы", stats2.get_5ks()))
-                .flashesCount(Map.of("Брошено флешек", stats2.getFlashesThrown()))
-                .flashesEnemies(Map.of("Ослеплено врагов", stats2.getFlashesEnemiesBlinded()))
-                .flashesSuccess(Map.of("Эффективность флешек", stats2.getFlashesSuccessfulRate()))
-                .flashesPerRound(Map.of("Флешек за раунд", stats2.getFlashesPerRound()))
-                .utilThrown(Map.of("Кинуто гранат", stats2.getUtilityThrown()))
-                .firedmg(Map.of("Урон от молотова", stats2.getFiredmg()))
-                .utilDamage(Map.of("Урон от гранат", stats2.getUtilityDamage()))
-                .utilDamagePerRound(Map.of("Урон гранатами/раунд", stats2.getUtilityDamagePerRound()))
-                .rifflek(Map.of("Фраги с рифлы", stats2.getRiffleKills()))
-                .pistolk(Map.of("Фраги с пистолетов", stats2.getKillsWithPistol()))
-                .sniperk(Map.of("Фраги со снайперки", stats2.getKillsWithSniper()))
-                .entryAttempts(Map.of("Всего энтри", stats2.getEntryAttempts()))
-                .entryKillsPercent(Map.of("Процент энтри-киллов", stats2.getEntryKillsRate()))
-                .firstk(Map.of("Первая кровь", stats2.getFirstk()))
-                .firstFeeds(Map.of("Первый фид", stats2.getFirstFeeds()))
-                .entrySuccessPerRound(Map.of("Успех в энтри/раунд", stats2.getEntryKillsPerRound()))
+                .stats(List.of(
+                        Map.of("playerId", player2Id),
+                        Map.of("Средний урон/раунд", String.valueOf(stats2.getAdr())),
+                        Map.of("К/Д", String.valueOf(stats2.getKd())),
+                        Map.of("Общий урон", String.valueOf(stats2.getDamageDealt())),
+                        Map.of("Киллы в голову", String.valueOf(stats2.getKillsWithHeadshot())),
+                        Map.of("Всего серий убийств", String.valueOf(stats2.getTotalKillingSpree())),
+                        Map.of("KAST", String.valueOf(stats2.getKast())),
+                        Map.of("Рейтинг GPoint", String.valueOf(stats2.getRating())),
+                        Map.of("Клатчи", String.valueOf(stats2.getOneVXAttempts())),
+                        Map.of("Успешность клатчей", String.valueOf(stats2.getClutchWinRate())),
+                        Map.of("Убийства в клатчах", String.valueOf(stats2.getOneVXWins())),
+                        Map.of("Убийства ослепленных", String.valueOf(stats2.getBlindk())),
+                        Map.of("Дабл-киллы", String.valueOf(stats2.get_2ks())),
+                        Map.of("Трипл-киллы", String.valueOf(stats2.get_3ks())),
+                        Map.of("Ультра-киллы", String.valueOf(stats2.get_4ks())),
+                        Map.of("Эйсы", String.valueOf(stats2.get_5ks())),
+                        Map.of("Брошено флешек", String.valueOf(stats2.getFlashesThrown())),
+                        Map.of("Ослеплено врагов", String.valueOf(stats2.getFlashesEnemiesBlinded())),
+                        Map.of("Эффективность флешек", String.valueOf(stats2.getFlashesSuccessfulRate())),
+                        Map.of("Флешек за раунд", String.valueOf(stats2.getFlashesPerRound())),
+                        Map.of("Кинуто гранат", String.valueOf(stats2.getUtilityThrown())),
+                        Map.of("Урон от молотова", String.valueOf(stats2.getFiredmg())),
+                        Map.of("Урон от гранат", String.valueOf(stats2.getUtilityDamage())),
+                        Map.of("Урон гранатами/раунд", String.valueOf(stats2.getUtilityDamagePerRound())),
+                        Map.of("Фраги с рифлы", String.valueOf(stats2.getRiffleKills())),
+                        Map.of("Фраги с пистолетов", String.valueOf(stats2.getKillsWithPistol())),
+                        Map.of("Фраги со снайперки", String.valueOf(stats2.getKillsWithSniper())),
+                        Map.of("Всего энтри", String.valueOf(stats2.getEntryAttempts())),
+                        Map.of("Процент энтри-киллов", String.valueOf(stats2.getEntryKillsRate())),
+                        Map.of("Первая кровь", String.valueOf(stats2.getFirstk())),
+                        Map.of("Первый фид", String.valueOf(stats2.getFirstFeeds())),
+                        Map.of("Успех в энтри/раунд", String.valueOf(stats2.getEntryKillsPerRound()))
+                ))
                 .build();
 
         PlayerComparison.PlayerComparison1v1 comparison1v1 = PlayerComparison.PlayerComparison1v1.builder()
@@ -188,14 +192,25 @@ public class PlayerComparisonServiceImpl implements PlayerComparisonService {
     private PlayerComparison.PlayerComparison1v1 findComparisonByPlayerIds(List<PlayerComparison.PlayerComparison1v1> comparisons,
                                                                            String player1Id, String player2Id) {
         for (PlayerComparison.PlayerComparison1v1 comparison : comparisons) {
-            if (comparison.getPlayersStats() == null || comparison.getPlayersStats().size() != 2) continue;
+            List<PlayerComparison.PlayerStats1v1> playersStats = comparison.getPlayersStats();
+            if (playersStats == null || playersStats.size() != 2) continue;
 
-            Set<String> playerIds = comparison.getPlayersStats().stream()
-                    .map(PlayerComparison.PlayerStats1v1::getPlayerId)
+            Set<String> extractedPlayerIds = playersStats.stream()
+                    .map(stats1v1 -> extractPlayerId(stats1v1.getStats()))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
 
-            if (playerIds.contains(player1Id) && playerIds.contains(player2Id)) {
+            if (extractedPlayerIds.contains(player1Id) && extractedPlayerIds.contains(player2Id)) {
                 return comparison;
+            }
+        }
+        return null;
+    }
+
+    private String extractPlayerId(List<Map<String, String>> statsList) {
+        for (Map<String, String> statMap : statsList) {
+            if (statMap.containsKey("playerId")) {
+                return statMap.get("playerId");
             }
         }
         return null;

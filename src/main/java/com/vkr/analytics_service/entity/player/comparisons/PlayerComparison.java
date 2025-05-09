@@ -52,43 +52,7 @@ public class PlayerComparison {
     @AllArgsConstructor
     @Jacksonized
     public static class PlayerStats1v1 {
-        private String playerId;
-
-        private Map<String, Double> rating = new HashMap<>();
-        private Map<String, Double> kdr = new HashMap<>();
-        private Map<String, Double> adr = new HashMap<>();
-        private Map<String, Double> kast = new HashMap<>();
-        private Map<String, Integer> damage = new HashMap<>();
-        private Map<String, Integer> clutches = new HashMap<>();
-        private Map<String, Double> clutchesSuccess = new HashMap<>();
-        private Map<String, Integer> clutchesKills = new HashMap<>();
-        private Map<String, Integer> headshotKills = new HashMap<>();
-        private Map<String, Integer> blindk = new HashMap<>();
-
-        private Map<String, Integer> killingSprees = new HashMap<>();
-        private Map<String, Integer> _2ks = new HashMap<>();
-        private Map<String, Integer> _3ks = new HashMap<>();
-        private Map<String, Integer> _4ks = new HashMap<>();
-        private Map<String, Integer> _5ks = new HashMap<>();
-
-        private Map<String, Integer> flashesCount = new HashMap<>();
-        private Map<String, Integer> flashesEnemies = new HashMap<>();
-        private Map<String, Double> flashesSuccess = new HashMap<>();
-        private Map<String, Double> flashesPerRound = new HashMap<>();
-        private Map<String, Integer> utilThrown = new HashMap<>();
-        private Map<String, Integer> firedmg = new HashMap<>();
-        private Map<String, Integer> utilDamage = new HashMap<>();
-        private Map<String, Double> utilDamagePerRound = new HashMap<>();
-
-        private Map<String, Integer> rifflek = new HashMap<>();
-        private Map<String, Integer> pistolk = new HashMap<>();
-        private Map<String, Integer> sniperk = new HashMap<>();
-
-        private Map<String, Integer> entryAttempts = new HashMap<>();
-        private Map<String, Double> entryKillsPercent = new HashMap<>();
-        private Map<String, Integer> firstk = new HashMap<>();
-        private Map<String, Integer> firstFeeds = new HashMap<>();
-        private Map<String, Double> entrySuccessPerRound = new HashMap<>();
+        List<Map<String, String>> stats = new ArrayList<>();
     }
 
 }
