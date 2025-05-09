@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -75,6 +77,10 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
                 (double) playerGameStats.getFlashesThrown() / match.getRounds_played()
         );
 
+        playerGameStats.setUtilityDamagePerRound((double) playerGameStats.getUtilityDamage() / match.getRounds_played());
+
+        playerGameStats.setRiffleKills(playerGameStats.getKills() - (playerGameStats.getKillsWithPistol() + playerGameStats.getKillsWithPistol() + playerGameStats.getUniquek()));
+
         playerGameStatsRepository.save(playerGameStats);
 
     }
@@ -83,13 +89,13 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
     public boolean isUsefulRound(String playerGameStatsId, RoundStats roundStats, Match match) {
         String[] split = playerGameStatsId.split("-");
         String playerId = split[0];
-        Match.Player currPlayer = match.getPlayers().get(0);
+        Match.Player currPlayer = match.getPlayers().stream()
+                .filter(player -> player.getSteam_id_64().equals(playerId))
+                .findFirst()
+                .orElse(null);
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
 
-        for (Match.Player player : match.getPlayers()) {
-            if (player.getSteam_id_64().equals(playerId)) currPlayer = player;
-        }
-
+        assert currPlayer != null;
         boolean madeKill = playerGameStats.getKills() != currPlayer.getStats().getKills();
         boolean madeAssist = playerGameStats.getAssists() != currPlayer.getStats().getAssists();
         boolean survived = playerGameStats.getDeaths() == currPlayer.getStats().getDeaths();
@@ -98,6 +104,14 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
 
         List<KillEventDto> killEvents = roundStats.getKillEvents();
         for (KillEventDto event : killEvents) {
+
+            if(event.getKillerSteamId().equals(playerId)) {
+                if(event.isSmoke()) playerGameStats.setSmokeKills(playerGameStats.getSmokeKills() + 1);
+                if(event.isNoscope()) playerGameStats.setNoscopes(playerGameStats.getNoscopes() + 1);
+                if(event.isPenetrated()) playerGameStats.setWallbangs(playerGameStats.getWallbangs() + 1);
+            }
+            playerGameStatsRepository.save(playerGameStats);
+
             if (event.getVictimSteamId().equals(playerId)) {
                 String killerId = event.getKillerSteamId();
                 String[] parts = event.getTimestamp().split(":");
@@ -144,8 +158,10 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
                 + impact * 0.25
                 + playerGameStats.getAdr() * 0.003
                 + 0.15;
+        rating = rating / 15;
         //допилить под роль
-        playerGameStats.setRating(rating);
+        BigDecimal roundedRating = new BigDecimal(rating).setScale(2, RoundingMode.HALF_UP);
+        playerGameStats.setRating(roundedRating.doubleValue());
         playerGameStatsRepository.save(playerGameStats);
     }
 
@@ -168,43 +184,4 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         playerGameStats.setBestWeapon(bestWeapon);
         playerGameStatsRepository.save(playerGameStats);
     }
-
-//    @Override
-//    public void calculateBasicExtendedStatsOnMap(String playerGameOnMapStatsId, Match match) {
-//
-//    }
-//
-//
-//    @Override
-//    public void calculateOverallRatingOnMap(String playerGameOnMapStatsId) {
-//        PlayerGameStatsOnMap playerGameStats = playerGameStatsOnMapRepository.findById(playerGameOnMapStatsId).get();
-//
-//        double impact = playerGameStats.getKpr() * 2 + 0.3 * playerGameStats.getApr() - 0.5;
-//        double rating = playerGameStats.getKast()
-//                + playerGameStats.getKpr() * 0.35
-//                + playerGameStats.getDpr() * 0.55
-//                + impact * 0.25
-//                + playerGameStats.getAdr() * 0.003
-//                + 0.15;
-//        //допилить под роль
-//        playerGameStats.setRating(rating);
-//        playerGameStatsOnMapRepository.save(playerGameStats);
-//    }
-//
-//    @Override
-//    public void calculateBestWeaponOnMap(String playerGameOnMapStatsId) {
-//        String[] split = playerGameOnMapStatsId.split("-");
-//        String playerId = split[0];
-//        String seriesId = split[2];
-//        PlayerGameStatsOnMap playerGameStats = playerGameStatsOnMapRepository.findById(playerGameOnMapStatsId).get();
-//        List<PlayerWeaponStats> playerWeaponStats = playerWeaponStatsRepository.findAllBySteamIdAndScopeId(playerId, seriesId);
-//
-//        String bestWeapon = playerWeaponStats.stream()
-//                .max(Comparator.comparingInt(PlayerWeaponStats::getKills))
-//                .map(PlayerWeaponStats::getWeapon)
-//                .orElse(null);
-//
-//        playerGameStats.setBestWeapon(bestWeapon);
-//        playerGameStatsOnMapRepository.save(playerGameStats);
-//    }
 }

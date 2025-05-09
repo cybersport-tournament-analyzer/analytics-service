@@ -5,7 +5,6 @@ import com.vkr.analytics_service.entity.player.comparisons.Duels;
 import com.vkr.analytics_service.entity.player.comparisons.PlayerDuels;
 import com.vkr.analytics_service.exception.EntityNotFoundException;
 import com.vkr.analytics_service.repository.player.comparison.DuelsRepository;
-import com.vkr.analytics_service.repository.round.RoundStatsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +26,16 @@ public class DuelsServiceImpl implements DuelsService {
         Duels duel = duelsRepository.findById(duelId)
                 .orElseThrow(() -> new EntityNotFoundException("Duels not found for ID: " + duelId));
 
-        int pl1kills = 0;
-        int pl2kills = 0;
+        int pl1kills;
+        int pl2kills;
+
+        if (!duel.getDuels().isEmpty()) {
+            pl2kills = duel.getDuels().get(0).getPlayer2Kills();
+            pl1kills = duel.getDuels().get(0).getPlayer1Kills();
+        } else {
+            pl1kills = 0;
+            pl2kills = 0;
+        }
 
         for (KillEventDto killEvent : killEvents) {
             if (killEvent.getKillerSteamId().equals(player1Id) && killEvent.getVictimSteamId().equals(player2Id)) {
@@ -51,7 +58,13 @@ public class DuelsServiceImpl implements DuelsService {
                 .player2KillsPercent(player2Percent)
                 .build();
 
-        duel.getDuels().add(playerDuel);
+        if (!duel.getDuels().isEmpty()) {
+            duel.getDuels().remove(0);
+            duel.getDuels().add(playerDuel);
+        } else {
+            duel.getDuels().add(playerDuel);
+        }
+
         duelsRepository.save(duel);
     }
 
@@ -68,10 +81,11 @@ public class DuelsServiceImpl implements DuelsService {
     @Override
     public PlayerDuels findByPlayers(String player1Id, String player2Id, String scope, String scopeId, int seriesOrder) {
         Duels duel;
-        if(scope.equals("match")) duel = duelsRepository.findById(scope + "-" + scopeId + "-" + seriesOrder).orElse(null);
+        if (scope.equals("match"))
+            duel = duelsRepository.findById(scope + "-" + scopeId + "-" + seriesOrder).orElse(null);
         else duel = duelsRepository.findById(scope + "-" + scopeId + "-X").orElse(null);
         assert duel != null;
-        for(PlayerDuels playerDuel : duel.getDuels()) {
+        for (PlayerDuels playerDuel : duel.getDuels()) {
             if ((playerDuel.getPlayer1Id().equals(player1Id) && playerDuel.getPlayer2Id().equals(player2Id)) ||
                     (playerDuel.getPlayer1Id().equals(player2Id) && playerDuel.getPlayer2Id().equals(player1Id))) {
                 return playerDuel;

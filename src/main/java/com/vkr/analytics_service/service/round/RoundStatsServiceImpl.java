@@ -32,6 +32,11 @@ public class RoundStatsServiceImpl implements RoundStatsService {
     public RoundStats save(RoundEndEvent roundEndEvent) {
         RoundStats roundStats = roundStatsMapper.toDocument(roundEndEvent);
         log.info("Saving round stats: {}", roundStats);
+        roundStats.getKillEvents().forEach(killEvent -> {
+            System.out.println(killEvent.getKillerSteamId());
+            System.out.println(killEvent.getVictimSteamId());
+            System.out.println(killEvent.getTimestamp());
+        });
         return roundStatsRepository.save(roundStats);
     }
 }

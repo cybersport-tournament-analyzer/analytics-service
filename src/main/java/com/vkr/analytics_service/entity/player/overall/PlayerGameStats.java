@@ -88,6 +88,7 @@ public class PlayerGameStats {
     private int firstFeeds; // entry_attempts - entry_successes
     private double entryKillsRate; //entry_succ / entry_att
     private double entryKillsPerRound; //entry_succ / roundPlayed
+    private double utilityDamagePerRound; //utilityDamage / rounds played
 
     private double rating; //пока нет формулы рейтинга
 

@@ -1,9 +1,7 @@
 package com.vkr.analytics_service.kafka.consumer.tournamentStart;
 
 import com.vkr.analytics_service.kafka.consumer.KafkaConsumer;
-import com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent;
 import com.vkr.analytics_service.kafka.event.tournamentStart.TournamentStartEvent;
-import com.vkr.analytics_service.service.engine.handler.RoundEndHandler;
 import com.vkr.analytics_service.service.engine.handler.TournamentStartHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

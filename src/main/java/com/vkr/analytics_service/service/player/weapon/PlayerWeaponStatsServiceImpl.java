@@ -34,7 +34,7 @@ public class PlayerWeaponStatsServiceImpl implements PlayerWeaponStatsService {
             String steamId = kill.getKillerSteamId();
             String weapon = kill.getWeapon();
 
-            String id = steamId + "-" + scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X");
+            String id = weapon + "-" + steamId + "-" + scope + "-" + scopeId + (scope.equals("match") ? "-" + seriesOrder : "-X");
 
             PlayerWeaponStats stats = playerWeaponStatsRepository.findById(id)
                     .orElseGet(() -> {

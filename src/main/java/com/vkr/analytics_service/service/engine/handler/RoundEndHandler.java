@@ -5,6 +5,7 @@ import com.vkr.analytics_service.dto.matchmaking.Match;
 import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
 import com.vkr.analytics_service.entity.round.RoundStats;
 import com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent;
+import com.vkr.analytics_service.repository.round.RoundStatsRepository;
 import com.vkr.analytics_service.service.engine.AnalyticsEngine;
 import com.vkr.analytics_service.service.player.comparison.DuelsService;
 import com.vkr.analytics_service.service.player.comparison.PlayerComparisonService;
@@ -26,8 +27,16 @@ public class RoundEndHandler {
     private final DuelsService duelsService;
     private final PlayerComparisonService playerComparisonService;
     private final PlayerWeaponStatsService playerWeaponStatsService;
+    private final RoundStatsRepository roundStatsRepository;
 
     public void handleRoundEnd(RoundEndEvent event) {
+
+        System.out.println("смотрю что прилетело в ивенте!");
+        event.getKillEvents().forEach(killEvent -> {
+            System.out.println(killEvent.getKillerSteamId());
+            System.out.println(killEvent.getVictimSteamId());
+            System.out.println(killEvent.getTimestamp());
+        });
         RoundStats roundStats = roundStatsService.save(event);
 
         System.out.println("ис файнал это " + event.getIsFinal());
@@ -42,15 +51,17 @@ public class RoundEndHandler {
             playerComparisonService.initPlayerComparison("series", String.valueOf(roundStats.getMatchId()), -1);
         }
 
+        System.out.println(playerComparisonService.getPlayerComparisonSeries(String.valueOf(roundStats.getMatchId())).getId());
+
         System.out.println("сделал инит раундов и сравнений");
 
         for (PlayerStatsRaw player : roundStats.getPlayers()) {
             roundStats.getUsefulRound().put(player.getSteamId(), analyticsEngine.isUsefulRound(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + event.getSeriesOrder(), roundStats, event.getMatch()));
             System.out.println("ебашу юзфул раунд для " + player.getSteamId());
         }
+        roundStatsRepository.save(roundStats);
 
         //шафл дуэлей
-
         List<Match.Player> team1Players = event.getMatch().getPlayers().stream()
                 .filter(p -> "team1".equals(p.getTeam()))
                 .toList();
