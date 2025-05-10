@@ -25,7 +25,6 @@ public class DuelsServiceImpl implements DuelsService {
     public void processDuels(String player1Id, String player2Id, String scope, String scopeId, List<RoundStats> allRounds, int seriesOrder) {
         String duelId = generateDuelId(scope, scopeId, seriesOrder);
 
-        // Создаем или получаем существующую дуэль
         Duels duel = duelsRepository.findById(duelId)
                 .orElseGet(() -> {
                     Duels newDuel = new Duels();
@@ -36,7 +35,6 @@ public class DuelsServiceImpl implements DuelsService {
                     return newDuel;
                 });
 
-        // Находим существующую дуэль между игроками, если есть
         PlayerDuels existingDuel = duel.getDuels().stream()
                 .filter(d -> (d.getPlayer1Id().equals(player1Id) && d.getPlayer2Id().equals(player2Id)) ||
                         (d.getPlayer1Id().equals(player2Id) && d.getPlayer2Id().equals(player1Id)))
@@ -46,14 +44,11 @@ public class DuelsServiceImpl implements DuelsService {
         int pl1kills = 0;
         int pl2kills = 0;
 
-        // Если это серия и есть существующая дуэль - берем текущие значения
         if (scope.equals("series") && existingDuel != null) {
-            // Важно сохранить оригинальное соответствие игроков из первой встречи
             if (existingDuel.getPlayer1Id().equals(player1Id)) {
                 pl1kills = existingDuel.getPlayer1Kills();
                 pl2kills = existingDuel.getPlayer2Kills();
             } else {
-                // Если игроки поменялись местами - меняем счет тоже
                 pl1kills = existingDuel.getPlayer2Kills();
                 pl2kills = existingDuel.getPlayer1Kills();
             }
@@ -69,20 +64,16 @@ public class DuelsServiceImpl implements DuelsService {
             }
         }
 
-        // Удаляем старую дуэль (если была)
         if (existingDuel != null) {
             duel.getDuels().remove(existingDuel);
         }
 
-        // Создаем новую дуэль с обновленными значениями
         PlayerDuels playerDuel = new PlayerDuels();
 
-        // Для серии сохраняем оригинальный порядок игроков из первой встречи
         if (scope.equals("series") && existingDuel != null) {
             playerDuel.setPlayer1Id(existingDuel.getPlayer1Id());
             playerDuel.setPlayer2Id(existingDuel.getPlayer2Id());
 
-            // Корректируем счет в зависимости от порядка игроков
             if (existingDuel.getPlayer1Id().equals(player1Id)) {
                 playerDuel.setPlayer1Kills(pl1kills);
                 playerDuel.setPlayer2Kills(pl2kills);
@@ -91,14 +82,12 @@ public class DuelsServiceImpl implements DuelsService {
                 playerDuel.setPlayer2Kills(pl1kills);
             }
         } else {
-            // Для матча или новой дуэли в серии сохраняем текущий порядок
             playerDuel.setPlayer1Id(player1Id);
             playerDuel.setPlayer2Id(player2Id);
             playerDuel.setPlayer1Kills(pl1kills);
             playerDuel.setPlayer2Kills(pl2kills);
         }
 
-        // Рассчитываем проценты
         int totalKills = pl1kills + pl2kills;
         double player1Percent = totalKills == 0 ? 0.0 : (double) pl1kills / totalKills * 100;
         double player2Percent = totalKills == 0 ? 0.0 : (double) pl2kills / totalKills * 100;
@@ -106,7 +95,6 @@ public class DuelsServiceImpl implements DuelsService {
         playerDuel.setPlayer1KillsPercent(player1Percent);
         playerDuel.setPlayer2KillsPercent(player2Percent);
 
-        // Сохраняем обновленную дуэль
         duel.getDuels().add(playerDuel);
         duelsRepository.save(duel);
     }
