@@ -42,7 +42,7 @@ public class RoundEndHandler {
         System.out.println("ис файнал это " + event.getIsFinal());
 
         if (event.getRoundStats().getRoundNumber() == 1) {
-            playerGameStatsService.initStats(roundStats.getPlayers(), String.valueOf(roundStats.getMatchId()), String.valueOf(roundStats.getTournamentId()), event.getSeriesOrder());
+            playerGameStatsService.initNextMatchStats(roundStats.getPlayers(), String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
 
             duelsService.createDuel("match", String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
             duelsService.createDuel("series", String.valueOf(roundStats.getMatchId()), -1);
@@ -107,10 +107,10 @@ public class RoundEndHandler {
                 System.out.println("посчитал каст");
 
                 //расчет рейтинга
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder());
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
-                analyticsEngine.calculateOverallRating(player.getSteamId() + "-global-global-X");
+                analyticsEngine.calculateOverallRating(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder(), roundStats.getPlayers());
+                analyticsEngine.calculateOverallRating(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X", roundStats.getPlayers());
+//                analyticsEngine.calculateOverallRating(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
+//                analyticsEngine.calculateOverallRating(player.getSteamId() + "-global-global-X");
 
                 System.out.println("посчитал рейтинг");
             }

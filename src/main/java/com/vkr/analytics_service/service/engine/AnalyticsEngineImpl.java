@@ -2,6 +2,8 @@ package com.vkr.analytics_service.service.engine;
 
 import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
 import com.vkr.analytics_service.dto.matchmaking.Match;
+import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
+import com.vkr.analytics_service.dto.tournament.InGameRole;
 import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
 import com.vkr.analytics_service.entity.player.overall.PlayerWeaponStats;
 import com.vkr.analytics_service.entity.round.RoundStats;
@@ -151,21 +153,99 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
     }
 
     @Override
-    public void calculateOverallRating(String playerGameStatsId) {
+    public void calculateOverallRating(String playerGameStatsId, List<PlayerStatsRaw> players) {
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
+        PlayerGameStats playerGameStats1;
+         for(PlayerStatsRaw raw : players) {
+             playerGameStats1 = playerGameStatsRepository.findById(raw.getSteamId()+"-"+playerGameStats.getScope()
+             +"-"+playerGameStats.getScopeId()+"-"+
+                     (playerGameStats.getScope().equals("series") ? "X" : playerGameStatsId.charAt(
+                             playerGameStatsId.length() - 1
+                     ))).get();
+             if(playerGameStats1.getRole().equals(playerGameStats.getRole())) {
+                 double rating = calculateOverallRating(playerGameStats, playerGameStats1, playerGameStats.getRole());
+                 BigDecimal roundedRating = new BigDecimal(rating).setScale(2, RoundingMode.HALF_UP);
+                 playerGameStats.setRating(roundedRating.doubleValue());
+                 playerGameStatsRepository.save(playerGameStats);
 
-        double impact = playerGameStats.getKpr() * 2 + 0.3 * playerGameStats.getApr() - 0.5;
-        double rating = playerGameStats.getKast()
-                + playerGameStats.getKpr() * 0.35
-                + playerGameStats.getDpr() * 0.55
-                + impact * 0.25
-                + playerGameStats.getAdr() * 0.003
-                + 0.15;
-        rating = rating / 15;
-        //допилить под роль
-        BigDecimal roundedRating = new BigDecimal(rating).setScale(2, RoundingMode.HALF_UP);
-        playerGameStats.setRating(roundedRating.doubleValue());
-        playerGameStatsRepository.save(playerGameStats);
+                 break;
+             }
+         }
+    }
+
+    private double calculateOverallRating(PlayerGameStats myStats, PlayerGameStats opponentStats, String role) {
+        // === 1. Базовая часть рейтинга (одинакова для всех) ===
+        double impact = myStats.getKpr() * 2 + 0.3 * myStats.getApr() - 0.5;
+
+        double baseRating =
+                myStats.getKd() * 1.2 +
+                        impact * 0.25 +
+                        myStats.getKast() * 1.2 +
+                        myStats.getAdr() * 0.008 +
+                        myStats.getClutchWinRate() * 0.7 +
+                        myStats.getUtilityDamagePerRound() * 0.5;
+
+        double roleRating = 0.0;
+
+        // === 2. Ролевая часть рейтинга ===
+        if(role.equals("AWPer")) {
+            roleRating = myStats.getKillsWithSniper() * 1.5 +
+                    myStats.getEntryKillsRate() * 0.7 +
+                    myStats.getHsp() * 0.5;
+        }
+        if(role.equals("Riffler")) {
+            roleRating = myStats.getRiffleKills() * 1.2 +
+                    myStats.getKillsWithHeadshot() * 0.8 +
+                    myStats.getEntryKillsRate() * 0.6;
+        }
+        if(role.equals("Support")) {
+            roleRating = myStats.getFlashesEnemiesBlinded() * 0.9 +
+                    myStats.getFlashesSuccessfulRate() * 0.6 +
+                    myStats.getUtilityDamagePerRound() * 0.6;
+        }
+        if(role.equals("In Game Leader")) {
+            roleRating = myStats.getFlashesThrown() * 0.7 +
+                    myStats.getUtilityThrown() * 0.5 +
+                    myStats.getEntryAttempts() * 0.5;
+        }
+        if(role.equals("Lurker")) {
+            roleRating = myStats.getClutchWinRate() * 0.6 +
+                    myStats.getOneVXAttempts() * 0.4 +
+                    myStats.getFirstk() * 0.7 -
+                    myStats.getFirstFeeds() * 0.5;
+        }
+
+        double roleVsOpponentBonus = 0.0;
+
+        // === 3. Бонус за превосходство над соперником той же роли ===
+        if(role.equals("AWPer")) {
+            roleVsOpponentBonus = (myStats.getKillsWithSniper() - opponentStats.getKillsWithSniper()) * 0.8 +
+                    (myStats.getEntryKillsRate() - opponentStats.getEntryKillsRate()) * 0.5;
+        }
+        if(role.equals("Riffler")) {
+            roleVsOpponentBonus = (myStats.getRiffleKills() - opponentStats.getRiffleKills()) * 0.7 +
+                    (myStats.getKillsWithHeadshot() - opponentStats.getKillsWithHeadshot()) * 0.6;
+        }
+        if(role.equals("Support")) {
+            roleVsOpponentBonus = (myStats.getFlashesEnemiesBlinded() - opponentStats.getFlashesEnemiesBlinded()) * 0.7 +
+                    (myStats.getFlashesSuccessfulRate() - opponentStats.getFlashesSuccessfulRate()) * 0.4;
+        }
+        if(role.equals("In Game Leader")) {
+            roleVsOpponentBonus = (myStats.getUtilityThrown() - opponentStats.getUtilityThrown()) * 0.5 +
+                    (myStats.getEntryAttempts() - opponentStats.getEntryAttempts()) * 0.4;
+        }
+        if(role.equals("Lurker")) {
+            roleVsOpponentBonus = (myStats.getFirstk() - opponentStats.getFirstk()) * 0.6 +
+                    (myStats.getClutchWinRate() - opponentStats.getClutchWinRate()) * 0.5;
+        }
+
+        // === 4. Суммируем всё ===
+        double totalRawScore = baseRating + roleRating + roleVsOpponentBonus;
+
+        // === 5. Нормализация (подбор коэффициента экспериментально) ===
+        double normalizationFactor = 2.2;
+
+        return Math.max(0.0, Math.min(10.0, totalRawScore / normalizationFactor));
     }
 
     @Override

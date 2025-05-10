@@ -1,7 +1,10 @@
 package com.vkr.analytics_service.service.engine;
 
 import com.vkr.analytics_service.dto.matchmaking.Match;
+import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
 import com.vkr.analytics_service.entity.round.RoundStats;
+
+import java.util.List;
 
 public interface AnalyticsEngine {
 
@@ -11,15 +14,8 @@ public interface AnalyticsEngine {
 
     void calculateKast(String playerGameStatsId, int seriesOrder);
 
-    void calculateOverallRating(String playerGameStatsId);
+    void calculateOverallRating(String playerGameStatsId, List<PlayerStatsRaw> players);
 
     void calculateBestWeapon(String playerGameStatsId);
-
-//    void calculateBasicExtendedStatsOnMap(String playerGameOnMapStatsId, Match match);
-//
-//    void calculateOverallRatingOnMap(String playerGameOnMapStatsId);
-//
-//    void calculateBestWeaponOnMap(String playerGameOnMapStatsId);
-
 
 }

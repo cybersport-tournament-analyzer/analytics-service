@@ -48,7 +48,8 @@ public class KafkaConsumerConfig {
                 round-end:com.vkr.analytics_service.kafka.event.roundEnd.RoundEndEvent,
                 match-end:com.vkr.analytics_service.kafka.event.matchEnd.MatchEndEvent,
                 pick-bans:com.vkr.analytics_service.kafka.event.pickbans.PickBansEvent,
-                tournament-start:com.vkr.analytics_service.kafka.event.tournamentStart.TournamentStartEvent
+                tournament-start:com.vkr.analytics_service.kafka.event.tournamentStart.TournamentStartEvent,
+                lobby-start:com.vkr.analytics_service.kafka.event.lobbyStart.LobbyStartEvent
                 """);
 
         return new DefaultKafkaConsumerFactory<>(props);

@@ -1,6 +1,7 @@
 package com.vkr.analytics_service.entity.player.overall;
 
 
+import com.vkr.analytics_service.dto.tournament.InGameRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class PlayerGameStats {
 
     private String steamId;
     private String scope;    // match / series / tournament / platform
+    private String role;
     private String scopeId;  // matchId / matchId / tournamentId / "global"
     private int matchesPlayed;
     private int seriesOrder;

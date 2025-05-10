@@ -77,7 +77,7 @@ public class PlayerGameStatsOnMapServiceImpl implements PlayerGameStatsOnMapServ
             analyticsEngine.calculateBasicExtendedStats(id, match);
             analyticsEngine.calculateKast(id, 0);
             analyticsEngine.calculateBestWeapon(id);
-            analyticsEngine.calculateOverallRating(id);
+//            analyticsEngine.calculateOverallRating(id);
 
             playerGameStatsOnMapRepository.save(stats);
         }

@@ -2,6 +2,8 @@ package com.vkr.analytics_service.service.player.game.overall;
 
 import com.vkr.analytics_service.dto.matchmaking.Match;
 import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
+import com.vkr.analytics_service.dto.tournament.PlayerDto;
+import com.vkr.analytics_service.dto.tournament.TeamDto;
 import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
 import com.vkr.analytics_service.repository.player.overall.PlayerGameStatsRepository;
 import com.vkr.analytics_service.service.engine.AnalyticsEngine;
@@ -137,13 +139,14 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
     }
 
     @Override
-    public void initStats(List<PlayerStatsRaw> players, String tournamentMatchId, String tournamentId, int seriesOrder) {
-        for(PlayerStatsRaw player : players) {
-            PlayerGameStats statsSeries = playerGameStatsRepository.findById(player.getSteamId()+ "-series-" + tournamentMatchId + "-X").orElse(
+    public void initStats(TeamDto team1, TeamDto team2, String tournamentMatchId, int seriesOrder) {
+        for(PlayerDto player : team1.getPlayers()) {
+            PlayerGameStats statsSeries = playerGameStatsRepository.findById(player.getPlayerSteamId()+ "-series-" + tournamentMatchId + "-X").orElse(
                     playerGameStatsRepository.save(PlayerGameStats.builder()
-                            .id(player.getSteamId()+"-series-"+tournamentMatchId+"-X")
-                            .steamId(player.getSteamId())
+                            .id(player.getPlayerSteamId()+"-series-"+tournamentMatchId+"-X")
+                            .steamId(player.getPlayerSteamId())
                             .scope("series")
+                            .role(player.getInGameRole().getRoleName())
                             .seriesOrder(-1)
                             .scopeId(tournamentMatchId)
                             .matchesPlayed(0)
@@ -152,9 +155,54 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
             );
             PlayerGameStats statsMatch =
                     playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getPlayerSteamId()+"-match-"+tournamentMatchId+"-"+seriesOrder)
+                            .steamId(player.getPlayerSteamId())
+                            .scope("match")
+                            .role(player.getInGameRole().getRoleName())
+                            .scopeId(tournamentMatchId)
+                            .seriesOrder(seriesOrder)
+                            .matchesPlayed(0)
+                            .build()
+                    );
+        }
+        for(PlayerDto player : team2.getPlayers()) {
+            PlayerGameStats statsSeries = playerGameStatsRepository.findById(player.getPlayerSteamId()+ "-series-" + tournamentMatchId + "-X").orElse(
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getPlayerSteamId()+"-series-"+tournamentMatchId+"-X")
+                            .steamId(player.getPlayerSteamId())
+                            .scope("series")
+                            .role(player.getInGameRole().getRoleName())
+                            .seriesOrder(-1)
+                            .scopeId(tournamentMatchId)
+                            .matchesPlayed(0)
+                            .build()
+                    )
+            );
+            PlayerGameStats statsMatch =
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
+                            .id(player.getPlayerSteamId()+"-match-"+tournamentMatchId+"-"+seriesOrder)
+                            .steamId(player.getPlayerSteamId())
+                            .scope("match")
+                            .role(player.getInGameRole().getRoleName())
+                            .scopeId(tournamentMatchId)
+                            .seriesOrder(seriesOrder)
+                            .matchesPlayed(0)
+                            .build()
+                    );
+        }
+    }
+
+    @Override
+    public void initNextMatchStats(List<PlayerStatsRaw> players, String tournamentMatchId, int seriesOrder) {
+        for(PlayerStatsRaw player : players) {
+            PlayerGameStats seriesStats = playerGameStatsRepository.findById(player.getSteamId() + "-series-"  + tournamentMatchId + "-X").orElse(null);
+            assert seriesStats != null;
+            PlayerGameStats statsMatch =
+                    playerGameStatsRepository.save(PlayerGameStats.builder()
                             .id(player.getSteamId()+"-match-"+tournamentMatchId+"-"+seriesOrder)
                             .steamId(player.getSteamId())
                             .scope("match")
+                            .role(seriesStats.getRole())
                             .scopeId(tournamentMatchId)
                             .seriesOrder(seriesOrder)
                             .matchesPlayed(0)

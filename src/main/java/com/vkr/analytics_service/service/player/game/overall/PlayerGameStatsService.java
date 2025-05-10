@@ -2,6 +2,7 @@ package com.vkr.analytics_service.service.player.game.overall;
 
 import com.vkr.analytics_service.dto.matchmaking.Match;
 import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
+import com.vkr.analytics_service.dto.tournament.TeamDto;
 import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public interface PlayerGameStatsService {
     PlayerGameStats getSeriesPlayerGameStats(String playerId, String tournamentMatchId);
     PlayerGameStats getMatchPlayerGameStats(String playerId, String tournamentMatchId, int seriesOrder);
 
-    void initStats(List<PlayerStatsRaw> players, String tournamentMatchId, String tournamentId, int seriesOrder);
+    void initStats(TeamDto team1, TeamDto team2, String tournamentMatchId, int seriesOrder);
     void initGlobalStats(String playerId, String tournamentId);
+    void initNextMatchStats(List<PlayerStatsRaw> players, String tournamentMatchId, int seriesOrder);
 }
