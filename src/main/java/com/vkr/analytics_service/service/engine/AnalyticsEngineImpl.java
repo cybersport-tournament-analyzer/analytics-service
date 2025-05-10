@@ -96,6 +96,9 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
 
         assert currPlayer != null;
+        System.out.println("match kills = " + currPlayer.getStats().getKills());
+        System.out.println("game stats kills = " + playerGameStats.getKills());
+
         boolean madeKill = playerGameStats.getKills() != currPlayer.getStats().getKills();
         boolean madeAssist = playerGameStats.getAssists() != currPlayer.getStats().getAssists();
         boolean survived = playerGameStats.getDeaths() == currPlayer.getStats().getDeaths();

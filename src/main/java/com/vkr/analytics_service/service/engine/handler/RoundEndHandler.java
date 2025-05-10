@@ -61,37 +61,6 @@ public class RoundEndHandler {
         }
         roundStatsRepository.save(roundStats);
 
-        //шафл дуэлей
-        List<Match.Player> team1Players = event.getMatch().getPlayers().stream()
-                .filter(p -> "team1".equals(p.getTeam()))
-                .toList();
-
-        List<Match.Player> team2Players = event.getMatch().getPlayers().stream()
-                .filter(p -> "team2".equals(p.getTeam()))
-                .toList();
-
-        System.out.println("шафлю дуэли начало");
-
-        for (Match.Player p1 : team1Players) {
-            System.out.println("шафлю для " + p1.getNickname_override());
-            for (Match.Player p2 : team2Players) {
-                System.out.println("шафлю для " + p1.getNickname_override() + " и " + p2.getNickname_override());
-                duelsService.processDuels(p1.getSteam_id_64(),
-                        p2.getSteam_id_64(),
-                        "match",
-                        String.valueOf(roundStats.getMatchId()),
-                        roundStats.getKillEvents(),
-                        roundStats.getSeriesOrder());
-
-                duelsService.processDuels(p1.getSteam_id_64(),
-                        p2.getSteam_id_64(),
-                        "series",
-                        String.valueOf(roundStats.getMatchId()),
-                        roundStats.getKillEvents(),
-                        -1);
-            }
-        }
-
         //расчет статы по оружиям
         playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "global", "global", -1);
         playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "match", String.valueOf(roundStats.getMatchId()), roundStats.getSeriesOrder());
@@ -144,6 +113,38 @@ public class RoundEndHandler {
                 analyticsEngine.calculateOverallRating(player.getSteamId() + "-global-global-X");
 
                 System.out.println("посчитал рейтинг");
+            }
+
+            //шафл дуэлей
+            List<Match.Player> team1Players = event.getMatch().getPlayers().stream()
+                    .filter(p -> "team1".equals(p.getTeam()))
+                    .toList();
+
+            List<Match.Player> team2Players = event.getMatch().getPlayers().stream()
+                    .filter(p -> "team2".equals(p.getTeam()))
+                    .toList();
+
+            System.out.println("шафлю дуэли начало");
+            List<RoundStats> allRounds = roundStatsRepository.findAllByMatchIdAndSeriesOrder(roundStats.getMatchId(), roundStats.getSeriesOrder());
+
+            for (Match.Player p1 : team1Players) {
+                System.out.println("шафлю для " + p1.getNickname_override());
+                for (Match.Player p2 : team2Players) {
+                    System.out.println("шафлю для " + p1.getNickname_override() + " и " + p2.getNickname_override());
+                    duelsService.processDuels(p1.getSteam_id_64(),
+                            p2.getSteam_id_64(),
+                            "match",
+                            String.valueOf(roundStats.getMatchId()),
+                            allRounds,
+                            roundStats.getSeriesOrder());
+
+                    duelsService.processDuels(p1.getSteam_id_64(),
+                            p2.getSteam_id_64(),
+                            "series",
+                            String.valueOf(roundStats.getMatchId()),
+                            allRounds,
+                            -1);
+                }
             }
 
             List<Match.Player> team1Players1 = event.getMatch().getPlayers().stream()

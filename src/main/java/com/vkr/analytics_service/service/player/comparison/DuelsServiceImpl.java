@@ -3,6 +3,7 @@ package com.vkr.analytics_service.service.player.comparison;
 import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
 import com.vkr.analytics_service.entity.player.comparisons.Duels;
 import com.vkr.analytics_service.entity.player.comparisons.PlayerDuels;
+import com.vkr.analytics_service.entity.round.RoundStats;
 import com.vkr.analytics_service.exception.EntityNotFoundException;
 import com.vkr.analytics_service.repository.player.comparison.DuelsRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -20,51 +22,92 @@ public class DuelsServiceImpl implements DuelsService {
     private final DuelsRepository duelsRepository;
 
     @Override
-    public void processDuels(String player1Id, String player2Id, String scope, String scopeId, List<KillEventDto> killEvents, int seriesOrder) {
+    public void processDuels(String player1Id, String player2Id, String scope, String scopeId, List<RoundStats> allRounds, int seriesOrder) {
         String duelId = generateDuelId(scope, scopeId, seriesOrder);
 
+        // Создаем или получаем существующую дуэль
         Duels duel = duelsRepository.findById(duelId)
-                .orElseThrow(() -> new EntityNotFoundException("Duels not found for ID: " + duelId));
+                .orElseGet(() -> {
+                    Duels newDuel = new Duels();
+                    newDuel.setId(duelId);
+                    newDuel.setScope(scope);
+                    newDuel.setScopeId(scopeId);
+                    newDuel.setDuels(new ArrayList<>());
+                    return newDuel;
+                });
 
-        int pl1kills;
-        int pl2kills;
+        // Находим существующую дуэль между игроками, если есть
+        PlayerDuels existingDuel = duel.getDuels().stream()
+                .filter(d -> (d.getPlayer1Id().equals(player1Id) && d.getPlayer2Id().equals(player2Id)) ||
+                        (d.getPlayer1Id().equals(player2Id) && d.getPlayer2Id().equals(player1Id)))
+                .findFirst()
+                .orElse(null);
 
-        if (!duel.getDuels().isEmpty()) {
-            pl2kills = duel.getDuels().get(0).getPlayer2Kills();
-            pl1kills = duel.getDuels().get(0).getPlayer1Kills();
-        } else {
-            pl1kills = 0;
-            pl2kills = 0;
-        }
+        int pl1kills = 0;
+        int pl2kills = 0;
 
-        for (KillEventDto killEvent : killEvents) {
-            if (killEvent.getKillerSteamId().equals(player1Id) && killEvent.getVictimSteamId().equals(player2Id)) {
-                pl1kills++;
-            } else if (killEvent.getKillerSteamId().equals(player2Id) && killEvent.getVictimSteamId().equals(player1Id)) {
-                pl2kills++;
+        // Если это серия и есть существующая дуэль - берем текущие значения
+        if (scope.equals("series") && existingDuel != null) {
+            // Важно сохранить оригинальное соответствие игроков из первой встречи
+            if (existingDuel.getPlayer1Id().equals(player1Id)) {
+                pl1kills = existingDuel.getPlayer1Kills();
+                pl2kills = existingDuel.getPlayer2Kills();
+            } else {
+                // Если игроки поменялись местами - меняем счет тоже
+                pl1kills = existingDuel.getPlayer2Kills();
+                pl2kills = existingDuel.getPlayer1Kills();
             }
         }
 
-        int totalKills = pl1kills + pl2kills;
-        double player1Percent = totalKills == 0 ? 0.0 : (double) pl1kills / totalKills;
-        double player2Percent = totalKills == 0 ? 0.0 : (double) pl2kills / totalKills;
-
-        PlayerDuels playerDuel = PlayerDuels.builder()
-                .player1Id(player1Id)
-                .player2Id(player2Id)
-                .player1Kills(pl1kills)
-                .player2Kills(pl2kills)
-                .player1KillsPercent(player1Percent)
-                .player2KillsPercent(player2Percent)
-                .build();
-
-        if (!duel.getDuels().isEmpty()) {
-            duel.getDuels().remove(0);
-            duel.getDuels().add(playerDuel);
-        } else {
-            duel.getDuels().add(playerDuel);
+        for(RoundStats roundStats : allRounds) {
+            for (KillEventDto killEvent : roundStats.getKillEvents()) {
+                if (killEvent.getKillerSteamId().equals(player1Id) && killEvent.getVictimSteamId().equals(player2Id)) {
+                    pl1kills++;
+                } else if (killEvent.getKillerSteamId().equals(player2Id) && killEvent.getVictimSteamId().equals(player1Id)) {
+                    pl2kills++;
+                }
+            }
         }
 
+        // Удаляем старую дуэль (если была)
+        if (existingDuel != null) {
+            duel.getDuels().remove(existingDuel);
+        }
+
+        // Создаем новую дуэль с обновленными значениями
+        PlayerDuels playerDuel = new PlayerDuels();
+
+        // Для серии сохраняем оригинальный порядок игроков из первой встречи
+        if (scope.equals("series") && existingDuel != null) {
+            playerDuel.setPlayer1Id(existingDuel.getPlayer1Id());
+            playerDuel.setPlayer2Id(existingDuel.getPlayer2Id());
+
+            // Корректируем счет в зависимости от порядка игроков
+            if (existingDuel.getPlayer1Id().equals(player1Id)) {
+                playerDuel.setPlayer1Kills(pl1kills);
+                playerDuel.setPlayer2Kills(pl2kills);
+            } else {
+                playerDuel.setPlayer1Kills(pl2kills);
+                playerDuel.setPlayer2Kills(pl1kills);
+            }
+        } else {
+            // Для матча или новой дуэли в серии сохраняем текущий порядок
+            playerDuel.setPlayer1Id(player1Id);
+            playerDuel.setPlayer2Id(player2Id);
+            playerDuel.setPlayer1Kills(pl1kills);
+            playerDuel.setPlayer2Kills(pl2kills);
+        }
+
+        // Рассчитываем проценты
+        int totalKills = pl1kills + pl2kills;
+        double player1Percent = totalKills == 0 ? 0.0 : (double) pl1kills / totalKills * 100;
+        double player2Percent = totalKills == 0 ? 0.0 : (double) pl2kills / totalKills * 100;
+
+        playerDuel.setPlayer1KillsPercent(player1Percent);
+        playerDuel.setPlayer2KillsPercent(player2Percent);
+
+        // Сохраняем обновленную дуэль
+        duel.getDuels().add(playerDuel);
         duelsRepository.save(duel);
     }
 
