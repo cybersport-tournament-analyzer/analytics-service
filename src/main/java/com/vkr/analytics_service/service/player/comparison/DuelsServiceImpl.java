@@ -4,7 +4,6 @@ import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
 import com.vkr.analytics_service.entity.player.comparisons.Duels;
 import com.vkr.analytics_service.entity.player.comparisons.PlayerDuels;
 import com.vkr.analytics_service.entity.round.RoundStats;
-import com.vkr.analytics_service.exception.EntityNotFoundException;
 import com.vkr.analytics_service.repository.player.comparison.DuelsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -35,31 +33,38 @@ public class DuelsServiceImpl implements DuelsService {
                     return newDuel;
                 });
 
-        List<Duels> pastDuels = duelsRepository.findAllByScopeAndScopeId("match", scopeId);
-
         PlayerDuels playerDuel = new PlayerDuels();
         int pl1kills = 0;
         int pl2kills = 0;
 
         if (scope.equals("series")) {
-            for(Duels pastDuel : pastDuels) {
+            System.out.println("скоп серии дуэль");
+            List<Duels> pastDuels = duelsRepository.findAllByScopeAndScopeId("match", scopeId);
+            for (Duels pastDuel : pastDuels) {
+                System.out.println("зашел в дуэль " + pastDuel.getId());
                 if (pastDuel.getDuels().get(0).getPlayer1Id().equals(player1Id)) {
                     pl1kills += pastDuel.getDuels().get(0).getPlayer1Kills();
                     pl2kills += pastDuel.getDuels().get(0).getPlayer2Kills();
                     playerDuel.setPlayer1Id(pastDuel.getDuels().get(0).getPlayer1Id());
                     playerDuel.setPlayer2Id(pastDuel.getDuels().get(0).getPlayer2Id());
-                    playerDuel.setPlayer1Kills(pastDuel.getDuels().get(0).getPlayer1Kills());
-                    playerDuel.setPlayer2Kills(pastDuel.getDuels().get(0).getPlayer2Kills());
+                    playerDuel.setPlayer1Kills(pl1kills);
+                    playerDuel.setPlayer2Kills(pl2kills);
                 } else {
                     pl1kills += pastDuel.getDuels().get(0).getPlayer2Kills();
                     pl2kills += pastDuel.getDuels().get(0).getPlayer1Kills();
-                    playerDuel.setPlayer1Kills(pastDuel.getDuels().get(0).getPlayer1Kills());
-                    playerDuel.setPlayer2Kills(pastDuel.getDuels().get(0).getPlayer2Kills());
+                    playerDuel.setPlayer1Kills(pl1kills);
+                    playerDuel.setPlayer2Kills(pl2kills);
                 }
             }
+            if (!duel.getDuels().isEmpty()) {
+                duel.getDuels().remove(0);
+            }
         } else {
-            for(RoundStats roundStats : allRounds) {
+            System.out.println("скоп матча дуэль");
+            for (RoundStats roundStats : allRounds) {
+                System.out.println("зашел в раунд стат");
                 for (KillEventDto killEvent : roundStats.getKillEvents()) {
+                    System.out.println("зашел в килл евенты");
                     if (killEvent.getKillerSteamId().equals(player1Id) && killEvent.getVictimSteamId().equals(player2Id)) {
                         pl1kills++;
                     } else if (killEvent.getKillerSteamId().equals(player2Id) && killEvent.getVictimSteamId().equals(player1Id)) {
@@ -67,10 +72,10 @@ public class DuelsServiceImpl implements DuelsService {
                     }
                 }
             }
-        }
-
-        if (duel.getDuels() != null) {
-            duel.getDuels().remove(0);
+            playerDuel.setPlayer1Kills(pl1kills);
+            playerDuel.setPlayer2Kills(pl2kills);
+            playerDuel.setPlayer1Id(player1Id);
+            playerDuel.setPlayer2Id(player2Id);
         }
 
         int totalKills = pl1kills + pl2kills;
