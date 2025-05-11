@@ -3,7 +3,6 @@ package com.vkr.analytics_service.service.engine;
 import com.vkr.analytics_service.dto.matchmaking.KillEventDto;
 import com.vkr.analytics_service.dto.matchmaking.Match;
 import com.vkr.analytics_service.dto.player.PlayerStatsRaw;
-import com.vkr.analytics_service.dto.tournament.InGameRole;
 import com.vkr.analytics_service.entity.player.overall.PlayerGameStats;
 import com.vkr.analytics_service.entity.player.overall.PlayerWeaponStats;
 import com.vkr.analytics_service.entity.round.RoundStats;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class AnalyticsEngineImpl implements AnalyticsEngine {
 
     private final PlayerGameStatsRepository playerGameStatsRepository;
-    private final PlayerGameStatsOnMapRepository playerGameStatsOnMapRepository;
     private final PlayerWeaponStatsRepository playerWeaponStatsRepository;
     private final RoundStatsRepository roundStatsRepository;
 
