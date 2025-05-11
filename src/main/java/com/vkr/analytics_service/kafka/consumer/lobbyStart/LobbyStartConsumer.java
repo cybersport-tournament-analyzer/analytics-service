@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LobbyStartConsumer implements KafkaConsumer<LobbyStartEvent> {
 
-    private PlayerGameStatsService playerGameStatsService;
+    private final PlayerGameStatsService playerGameStatsService;
 
 
     @Override

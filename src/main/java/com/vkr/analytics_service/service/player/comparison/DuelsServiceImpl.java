@@ -35,57 +35,42 @@ public class DuelsServiceImpl implements DuelsService {
                     return newDuel;
                 });
 
-        PlayerDuels existingDuel = duel.getDuels().stream()
-                .filter(d -> (d.getPlayer1Id().equals(player1Id) && d.getPlayer2Id().equals(player2Id)) ||
-                        (d.getPlayer1Id().equals(player2Id) && d.getPlayer2Id().equals(player1Id)))
-                .findFirst()
-                .orElse(null);
+        List<Duels> pastDuels = duelsRepository.findAllByScopeAndScopeId("match", scopeId);
 
+        PlayerDuels playerDuel = new PlayerDuels();
         int pl1kills = 0;
         int pl2kills = 0;
 
-        if (scope.equals("series") && existingDuel != null) {
-            if (existingDuel.getPlayer1Id().equals(player1Id)) {
-                pl1kills = existingDuel.getPlayer1Kills();
-                pl2kills = existingDuel.getPlayer2Kills();
-            } else {
-                pl1kills = existingDuel.getPlayer2Kills();
-                pl2kills = existingDuel.getPlayer1Kills();
+        if (scope.equals("series")) {
+            for(Duels pastDuel : pastDuels) {
+                if (pastDuel.getDuels().get(0).getPlayer1Id().equals(player1Id)) {
+                    pl1kills += pastDuel.getDuels().get(0).getPlayer1Kills();
+                    pl2kills += pastDuel.getDuels().get(0).getPlayer2Kills();
+                    playerDuel.setPlayer1Id(pastDuel.getDuels().get(0).getPlayer1Id());
+                    playerDuel.setPlayer2Id(pastDuel.getDuels().get(0).getPlayer2Id());
+                    playerDuel.setPlayer1Kills(pastDuel.getDuels().get(0).getPlayer1Kills());
+                    playerDuel.setPlayer2Kills(pastDuel.getDuels().get(0).getPlayer2Kills());
+                } else {
+                    pl1kills += pastDuel.getDuels().get(0).getPlayer2Kills();
+                    pl2kills += pastDuel.getDuels().get(0).getPlayer1Kills();
+                    playerDuel.setPlayer1Kills(pastDuel.getDuels().get(0).getPlayer1Kills());
+                    playerDuel.setPlayer2Kills(pastDuel.getDuels().get(0).getPlayer2Kills());
+                }
             }
-        }
-
-        for(RoundStats roundStats : allRounds) {
-            for (KillEventDto killEvent : roundStats.getKillEvents()) {
-                if (killEvent.getKillerSteamId().equals(player1Id) && killEvent.getVictimSteamId().equals(player2Id)) {
-                    pl1kills++;
-                } else if (killEvent.getKillerSteamId().equals(player2Id) && killEvent.getVictimSteamId().equals(player1Id)) {
-                    pl2kills++;
+        } else {
+            for(RoundStats roundStats : allRounds) {
+                for (KillEventDto killEvent : roundStats.getKillEvents()) {
+                    if (killEvent.getKillerSteamId().equals(player1Id) && killEvent.getVictimSteamId().equals(player2Id)) {
+                        pl1kills++;
+                    } else if (killEvent.getKillerSteamId().equals(player2Id) && killEvent.getVictimSteamId().equals(player1Id)) {
+                        pl2kills++;
+                    }
                 }
             }
         }
 
-        if (existingDuel != null) {
-            duel.getDuels().remove(existingDuel);
-        }
-
-        PlayerDuels playerDuel = new PlayerDuels();
-
-        if (scope.equals("series") && existingDuel != null) {
-            playerDuel.setPlayer1Id(existingDuel.getPlayer1Id());
-            playerDuel.setPlayer2Id(existingDuel.getPlayer2Id());
-
-            if (existingDuel.getPlayer1Id().equals(player1Id)) {
-                playerDuel.setPlayer1Kills(pl1kills);
-                playerDuel.setPlayer2Kills(pl2kills);
-            } else {
-                playerDuel.setPlayer1Kills(pl2kills);
-                playerDuel.setPlayer2Kills(pl1kills);
-            }
-        } else {
-            playerDuel.setPlayer1Id(player1Id);
-            playerDuel.setPlayer2Id(player2Id);
-            playerDuel.setPlayer1Kills(pl1kills);
-            playerDuel.setPlayer2Kills(pl2kills);
+        if (duel.getDuels() != null) {
+            duel.getDuels().remove(0);
         }
 
         int totalKills = pl1kills + pl2kills;

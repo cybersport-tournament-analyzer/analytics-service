@@ -140,7 +140,13 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         String playerId = split[0];
         String seriesId = split[2] + "-" + split[3] + "-" + split[4] + "-" + split[5] + "-" + split[6];
         PlayerGameStats playerGameStats = playerGameStatsRepository.findById(playerGameStatsId).get();
-        List<RoundStats> roundStats = roundStatsRepository.findAllByMatchIdAndSeriesOrder(UUID.fromString(seriesId), seriesOrder);
+        List<RoundStats> roundStats;
+        if (seriesOrder == -1) {
+            roundStats = roundStatsRepository.findAllByMatchId(UUID.fromString(seriesId));
+        }
+        else {
+            roundStats = roundStatsRepository.findAllByMatchIdAndSeriesOrder(UUID.fromString(seriesId), seriesOrder);
+        }
         int usefulRounds = 0;
         for (RoundStats roundStat : roundStats) {
             if (Boolean.TRUE.equals(roundStat.getUsefulRound().get(playerId))) usefulRounds++;

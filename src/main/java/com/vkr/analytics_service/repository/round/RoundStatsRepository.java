@@ -12,4 +12,6 @@ public interface RoundStatsRepository extends ElasticsearchRepository<RoundStats
     List<RoundStats> findAllByMatchIdAndMap(UUID matchId, String map);
 
     List<RoundStats> findAllByMatchIdAndSeriesOrder(UUID matchId, int seriesOrder);
+
+    List<RoundStats> findAllByMatchId(UUID matchId);
 }
