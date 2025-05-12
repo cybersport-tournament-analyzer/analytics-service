@@ -36,15 +36,15 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
 
         playerGameStats.setKd((double) playerGameStats.getKills() / (playerGameStats.getDeaths() == 0 ? 1 : playerGameStats.getDeaths()));
 
-        playerGameStats.setAdr((double) playerGameStats.getDamageDealt() / match.getRounds_played());
+        playerGameStats.setAdr((double) playerGameStats.getDamageDealt() / playerGameStats.getRoundPlayed());
 
         playerGameStats.setHsp((double) playerGameStats.getKillsWithHeadshot() / (playerGameStats.getKills() == 0 ? 1 : playerGameStats.getKills()));
 
-        playerGameStats.setKpr((double) playerGameStats.getKills() / match.getRounds_played());
+        playerGameStats.setKpr((double) playerGameStats.getKills() / playerGameStats.getRoundPlayed());
 
-        playerGameStats.setApr((double) playerGameStats.getAssists() / match.getRounds_played());
+        playerGameStats.setApr((double) playerGameStats.getAssists() / playerGameStats.getRoundPlayed());
 
-        playerGameStats.setDpr((double) playerGameStats.getDamageDealt() / match.getRounds_played());
+        playerGameStats.setDpr((double) playerGameStats.getDamageDealt() / playerGameStats.getRoundPlayed());
 
         playerGameStats.setClutchWinRate(
                 (double) playerGameStats.getOneVXWins() / (playerGameStats.getOneVXAttempts() == 0 ? 1 : playerGameStats.getOneVXAttempts())
@@ -70,14 +70,14 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
         );
 
         playerGameStats.setEntryKillsPerRound(
-                (double) playerGameStats.getEntrySuccesses() / match.getRounds_played()
+                (double) playerGameStats.getEntrySuccesses() / playerGameStats.getRoundPlayed()
         );
 
         playerGameStats.setFlashesPerRound(
-                (double) playerGameStats.getFlashesThrown() / match.getRounds_played()
+                (double) playerGameStats.getFlashesThrown() / playerGameStats.getRoundPlayed()
         );
 
-        playerGameStats.setUtilityDamagePerRound((double) playerGameStats.getUtilityDamage() / match.getRounds_played());
+        playerGameStats.setUtilityDamagePerRound((double) playerGameStats.getUtilityDamage() / playerGameStats.getRoundPlayed());
 
         playerGameStats.setRiffleKills(playerGameStats.getKills() - (playerGameStats.getKillsWithPistol() + playerGameStats.getKillsWithPistol() + playerGameStats.getUniquek()));
 

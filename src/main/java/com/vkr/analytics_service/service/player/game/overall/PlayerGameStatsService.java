@@ -22,6 +22,7 @@ public interface PlayerGameStatsService {
     PlayerGameStats getSeriesPlayerGameStats(String playerId, String tournamentMatchId);
     PlayerGameStats getMatchPlayerGameStats(String playerId, String tournamentMatchId, int seriesOrder);
 
+    void addRound(String playerGameStatsId);
     void initStats(TeamDto team1, TeamDto team2, String tournamentMatchId, int seriesOrder);
     void initGlobalStats(String playerId, String tournamentId);
     void initNextMatchStats(List<PlayerStatsRaw> players, String tournamentMatchId, int seriesOrder);

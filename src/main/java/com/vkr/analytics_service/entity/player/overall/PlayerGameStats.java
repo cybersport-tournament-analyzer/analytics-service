@@ -99,4 +99,5 @@ public class PlayerGameStats {
     private int noscopes;
     private int smokeKills;
 
+    private int roundPlayed;
 }

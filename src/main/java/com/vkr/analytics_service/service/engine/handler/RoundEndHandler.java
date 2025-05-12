@@ -68,6 +68,14 @@ public class RoundEndHandler {
         playerWeaponStatsService.processKillEvents(roundStats.getKillEvents(), "tournament", String.valueOf(roundStats.getTournamentId()), -1);
 
         System.out.println("заполнил стату по оружиям");
+        for (PlayerStatsRaw player : roundStats.getPlayers()) {
+
+            //расчет простой расширенной статы
+            playerGameStatsService.addRound(player.getSteamId() + "-match-" + roundStats.getMatchId() + "-" + roundStats.getSeriesOrder() );
+            playerGameStatsService.addRound(player.getSteamId() + "-series-" + roundStats.getMatchId() + "-X");
+            playerGameStatsService.addRound(player.getSteamId() + "-tournament-" + roundStats.getTournamentId() + "-X");
+            playerGameStatsService.addRound(player.getSteamId() + "-global-global-X");
+        }
 
         if (event.getIsFinal() == 2) {
 

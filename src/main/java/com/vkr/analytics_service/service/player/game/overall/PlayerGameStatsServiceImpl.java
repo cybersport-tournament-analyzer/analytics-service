@@ -139,6 +139,13 @@ public class PlayerGameStatsServiceImpl implements PlayerGameStatsService {
     }
 
     @Override
+    public void addRound(String playerGameStatsId) {
+        PlayerGameStats stats = playerGameStatsRepository.findById(playerGameStatsId).orElse(null);
+        stats.setRoundPlayed(stats.getRoundPlayed() + 1);
+        playerGameStatsRepository.save(stats);
+    }
+
+    @Override
     public void initStats(TeamDto team1, TeamDto team2, String tournamentMatchId, int seriesOrder) {
         for(PlayerDto player : team1.getPlayers()) {
             PlayerGameStats statsSeries = playerGameStatsRepository.findById(player.getPlayerSteamId()+ "-series-" + tournamentMatchId + "-X").orElse(
