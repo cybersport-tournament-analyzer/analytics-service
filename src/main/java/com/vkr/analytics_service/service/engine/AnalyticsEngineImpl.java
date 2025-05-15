@@ -79,7 +79,7 @@ public class AnalyticsEngineImpl implements AnalyticsEngine {
 
         playerGameStats.setUtilityDamagePerRound((double) playerGameStats.getUtilityDamage() / playerGameStats.getRoundPlayed());
 
-        playerGameStats.setRiffleKills(playerGameStats.getKills() - (playerGameStats.getKillsWithPistol() + playerGameStats.getKillsWithPistol() + playerGameStats.getUniquek()));
+        playerGameStats.setRiffleKills(playerGameStats.getKills() - (playerGameStats.getKillsWithPistol() + playerGameStats.getKillsWithSniper() + playerGameStats.getUniquek()));
 
         playerGameStatsRepository.save(playerGameStats);
 
